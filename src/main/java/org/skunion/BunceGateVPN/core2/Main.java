@@ -14,7 +14,7 @@ import com.github.smallru8.Secure2.SQL.SQL;
 import com.github.smallru8.Secure2.config.Config;
 
 public class Main {
-	
+	///UTF-8編碼後要BASE64 不然解密會bug
 	public static void main( String[] args ) throws SQLException, URISyntaxException, IOException
     {
 		if(args[0].equalsIgnoreCase("-s")) {//server
