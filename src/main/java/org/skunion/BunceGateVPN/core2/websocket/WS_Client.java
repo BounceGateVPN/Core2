@@ -7,6 +7,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
+import java.util.Base64;
+
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.skunion.BunceGateVPN.core2.log.Event;
@@ -26,6 +28,10 @@ import com.github.smallru8.Secure2.config.Config;
  */
 public class WS_Client extends WebSocketClient{
 
+
+	public final Base64.Decoder decoder = Base64.getDecoder();
+	public final Base64.Encoder encoder = Base64.getEncoder();
+	
 	public boolean readyFlag;
 	public UsrData ud;
 	public Port sport; //Switch port
@@ -39,12 +45,6 @@ public class WS_Client extends WebSocketClient{
 		ud.port = cfg.port;
 		ud.sessionName = cfg.confName;
 		readyFlag = false;
-		try {
-			this.send(new String(ud.dh.getPublicKey(),"UTF-8"));//送出publickey, 以UTF-8編碼
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
 	/**
@@ -56,6 +56,24 @@ public class WS_Client extends WebSocketClient{
 	}
 	
 	/**
+	 * connect後自動送出publickey
+	 */
+	@Override
+	public void connect() {
+		super.connect();
+		try {
+			Thread.sleep(3000);
+			EventSender.sendLog("Start sending public key to server.");
+			//System.out.println("Client pubk : "+encoder.encodeToString(ud.dh.getPublicKey()));///////////
+			
+			this.send(encoder.encodeToString(ud.dh.getPublicKey()));//送出publickey, 以UTF-8編碼
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	/**
 	 * 送publickey、帳號密碼
 	 */
 	@Override
@@ -63,12 +81,7 @@ public class WS_Client extends WebSocketClient{
 		if(!readyFlag)
 			super.send(text);
 		else {
-			try {//加密帳號密碼
-				super.send(new String(ud.dh.encrypt(text.getBytes("UTF-8")),"UTF-8"));//String轉bytearray>>加密>>bytearray轉String
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			super.send(encoder.encodeToString(ud.dh.encrypt(decoder.decode(text))));//String轉bytearray>>加密>>bytearray轉String
 		}
 	}
 	
@@ -95,17 +108,38 @@ public class WS_Client extends WebSocketClient{
 		if(!ud.readyFlag) {
 			ud.readyFlag = true;
 			readyFlag = true;
+			
+			((DHSender)ud.dh).initAESKey(decoder.decode(message));///
+			//System.out.println("Server pubk : "+message);////////
+			EventSender.sendLog("D-H done.");
+			//DH完成,送帳號密碼 密碼不能有空白建!!!
+			
+			//System.out.println(ud.destSwitchName+" "+ud.name+" "+ud.passwd);
+			//send(ud.destSwitchName+" "+ud.name+" "+ud.passwd);//<switchname> <username> <passwd>
 			try {
-				((DHSender)ud.dh).initAESKey(message.getBytes("UTF-8"));
+				String usrData = new String(ud.dh.encrypt((ud.destSwitchName+"\n"+ud.name+"\n"+ud.passwd).getBytes("UTF-8")),"UTF-8");
+				System.out.println(usrData);
+				super.send(usrData);
+				
+			} catch (UnsupportedEncodingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			try {//測試加密資料送出
+				super.send(new String(ud.dh.encrypt("わためは悪くないよね。".getBytes("UTF-8")),"UTF-8"));
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			EventSender.sendLog("D-H done.");
-			//DH完成,送帳號密碼
-			send(ud.destSwitchName+"\n"+ud.name+"\n"+ud.passwd);//<switchname>\n<username>\n<passwd>
-		}else {//只有在測試時才會執行這行
-			EventSender.sendLog("Recv : " + message);
+			
 		}
 	}
 	

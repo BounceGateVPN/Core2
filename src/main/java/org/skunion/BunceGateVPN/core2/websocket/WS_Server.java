@@ -9,6 +9,7 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import org.java_websocket.WebSocket;
@@ -27,6 +28,9 @@ import com.github.smallru8.util.Pair;
 
 public class WS_Server extends WebSocketServer{
 
+	public final Base64.Decoder decoder = Base64.getDecoder();
+	public final Base64.Encoder encoder = Base64.getEncoder();
+	
 	public static Map<String,Pair<Config,VirtualSwitch>> switchLs = new HashMap<>();//SwitchName,<switch config,switch>
 	public static Map<WebSocket,WS_Package> WSRecord = new HashMap<>();//Connection list
 	
@@ -53,16 +57,16 @@ public class WS_Server extends WebSocketServer{
 	public void onMessage(WebSocket conn, String message) {
 		// TODO Auto-generated method stub
 		WS_Package wsp = WSRecord.get(conn);
-		if(wsp == null) {//接收client公鑰, 並紀錄connection
+		if(wsp == null) {
+			//接收client公鑰, 並紀錄connection
 			wsp = new WS_Package(conn);
-			try {
-				wsp.ud = new UsrData(message.getBytes("UTF-8"));
-				conn.send(new String(wsp.ud.dh.getPublicKey(),"UTF-8"));//server端公鑰,編碼成UTF-8字串後送出給client
-				WSRecord.put(conn, wsp);//加入紀錄
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			//EventSender.sendLog("Public key : "+message);/////////////////
+			wsp.ud = new UsrData(decoder.decode(message));
+			//System.out.println("Client pubk : "+message);//////////
+			//System.out.println("Server pubk : "+encoder.encodeToString(wsp.ud.dh.getPublicKey()));////////////
+			conn.send(encoder.encodeToString(wsp.ud.dh.getPublicKey()));//server端公鑰,編碼成UTF-8字串後送出給client
+			WSRecord.put(conn, wsp);//加入紀錄
+			
 		}else if(!wsp.readyFlag) {//收帳號密碼
 			try {
 				/**
@@ -70,7 +74,12 @@ public class WS_Server extends WebSocketServer{
 				 * data[1] = username
 				 * data[2] = passwd
 				 */
-				String[] data = new String(wsp.ud.dh.decryption(message.getBytes("UTF-8")),"UTF-8").split("\n");//String轉bytearray>>解密>>bytearray轉String
+				//String[] data = encoder.encodeToString(wsp.ud.dh.decryption(decoder.decode(message))).split("\n");//String轉bytearray>>解密>>bytearray轉String
+				
+				String[] data = new String(wsp.ud.dh.decryption(message.getBytes("UTF-8")),"UTF-8").split("\n");
+				System.out.println(data[0]);///
+				System.out.println(data[1]);///
+				System.out.println(data[2]);///
 				if(data.length==3&&switchLs.get(data[0])!=null) {//有3筆資料, 且switch存在
 					wsp.ud.destSwitchName = data[0];
 					wsp.ud.name = data[1];
@@ -89,7 +98,17 @@ public class WS_Server extends WebSocketServer{
 					WSRecord.remove(conn);
 					conn.close();
 				}
-			} catch (UnsupportedEncodingException | SQLException e) {
+			} catch (SQLException | UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else {
+			//測試用
+			String str;
+			try {
+				str = new String(wsp.ud.dh.decryption(message.getBytes("UTF-8")),"UTF-8");
+				EventSender.sendLog("Test : "+str);
+			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -138,7 +157,7 @@ public class WS_Server extends WebSocketServer{
 		String[] cfgs = new File("config/server/").list();
 		for(int i=0;i<cfgs.length;i++) {
 			Config cfg = new Config();
-			cfg.setConf(cfgs[i].split(".")[0],ConfType.SERVER);
+			cfg.setConf(cfgs[i].split("\\.")[0],ConfType.SERVER);
 			Pair<Config,VirtualSwitch> p = new Pair<Config, VirtualSwitch>();
 			VirtualSwitch vSwitch = new VirtualSwitch();
 			vSwitch.start();
