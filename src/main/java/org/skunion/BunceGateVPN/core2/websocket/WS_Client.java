@@ -81,7 +81,12 @@ public class WS_Client extends WebSocketClient{
 		if(!readyFlag)
 			super.send(text);
 		else {
-			super.send(encoder.encodeToString(ud.dh.encrypt(decoder.decode(text))));//String轉bytearray>>加密>>bytearray轉String
+			try {
+				super.send(encoder.encodeToString(ud.dh.encrypt(text.getBytes("UTF-8"))));
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}//String轉(UTF-8)bytearray>>加密>>bytearray轉(BASE64)String
 		}
 	}
 	
@@ -117,7 +122,7 @@ public class WS_Client extends WebSocketClient{
 			//System.out.println(ud.destSwitchName+" "+ud.name+" "+ud.passwd);
 			//send(ud.destSwitchName+" "+ud.name+" "+ud.passwd);//<switchname> <username> <passwd>
 			try {
-				String usrData = new String(ud.dh.encrypt((ud.destSwitchName+"\n"+ud.name+"\n"+ud.passwd).getBytes("UTF-8")),"UTF-8");
+				String usrData = encoder.encodeToString(ud.dh.encrypt((ud.destSwitchName+"\n"+ud.name+"\n"+ud.passwd).getBytes("UTF-8")));
 				System.out.println(usrData);
 				super.send(usrData);
 				
@@ -134,7 +139,7 @@ public class WS_Client extends WebSocketClient{
 			}
 			
 			try {//測試加密資料送出
-				super.send(new String(ud.dh.encrypt("わためは悪くないよね。".getBytes("UTF-8")),"UTF-8"));
+				super.send(encoder.encodeToString(ud.dh.encrypt("わためは悪くないよね。".getBytes("UTF-8"))));
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

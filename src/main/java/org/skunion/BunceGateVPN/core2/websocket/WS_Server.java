@@ -74,12 +74,7 @@ public class WS_Server extends WebSocketServer{
 				 * data[1] = username
 				 * data[2] = passwd
 				 */
-				//String[] data = encoder.encodeToString(wsp.ud.dh.decryption(decoder.decode(message))).split("\n");//String轉bytearray>>解密>>bytearray轉String
-				
-				String[] data = new String(wsp.ud.dh.decryption(message.getBytes("UTF-8")),"UTF-8").split("\n");
-				System.out.println(data[0]);///
-				System.out.println(data[1]);///
-				System.out.println(data[2]);///
+				String[] data = new String(wsp.ud.dh.decryption(decoder.decode(message)),"UTF-8").split("\n");//String轉(BASE64)bytearray>>解密>>bytearray轉(UTF-8)String
 				if(data.length==3&&switchLs.get(data[0])!=null) {//有3筆資料, 且switch存在
 					wsp.ud.destSwitchName = data[0];
 					wsp.ud.name = data[1];
@@ -106,7 +101,7 @@ public class WS_Server extends WebSocketServer{
 			//測試用
 			String str;
 			try {
-				str = new String(wsp.ud.dh.decryption(message.getBytes("UTF-8")),"UTF-8");
+				str = new String(wsp.ud.dh.decryption(decoder.decode(message)),"UTF-8");
 				EventSender.sendLog("Test : "+str);
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
