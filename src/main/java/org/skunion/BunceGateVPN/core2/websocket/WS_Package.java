@@ -11,8 +11,8 @@ import org.java_websocket.enums.Opcode;
 import org.java_websocket.enums.ReadyState;
 import org.java_websocket.framing.Framedata;
 
-import com.github.smallru8.BounceGateVPN.device.Port;
 import com.github.smallru8.Secure2.Data.UsrData;
+import com.github.smallru8.util.abstracts.Port;
 
 public class WS_Package implements WebSocket{
 

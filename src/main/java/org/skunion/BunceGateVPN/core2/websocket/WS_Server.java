@@ -15,8 +15,6 @@ import java.util.Map;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
-import org.skunion.BunceGateVPN.core2.log.Event;
-import org.skunion.BunceGateVPN.core2.log.EventSender;
 
 import com.github.smallru8.BounceGateVPN.Switch.VirtualSwitch;
 import com.github.smallru8.Secure2.Secure2;
@@ -25,6 +23,8 @@ import com.github.smallru8.Secure2.SQL.SQL;
 import com.github.smallru8.Secure2.config.Config;
 import com.github.smallru8.Secure2.config.Config.ConfType;
 import com.github.smallru8.util.Pair;
+import com.github.smallru8.util.log.Event;
+import com.github.smallru8.util.log.EventSender;
 
 public class WS_Server extends WebSocketServer{
 

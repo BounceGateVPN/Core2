@@ -11,12 +11,12 @@ import java.util.Base64;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
-import org.skunion.BunceGateVPN.core2.log.Event;
-import org.skunion.BunceGateVPN.core2.log.EventSender;
-import com.github.smallru8.BounceGateVPN.device.Port;
 import com.github.smallru8.Secure2.DH.DHSender;
 import com.github.smallru8.Secure2.Data.UsrData;
 import com.github.smallru8.Secure2.config.Config;
+import com.github.smallru8.util.abstracts.Port;
+import com.github.smallru8.util.log.Event;
+import com.github.smallru8.util.log.EventSender;
 
 /**
  * DH全程使用String傳輸
