@@ -1,6 +1,5 @@
 package org.skunion.BunceGateVPN.GUI;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -19,12 +18,16 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class MainWindow extends JFrame {
 
 	private JPanel contentPane;
 	private JTextArea textArea;
 	private JTextField textField;
+	private JList list;//client
+	private JList list_1;//server
 
 	/**
 	 * Launch the application.
@@ -56,10 +59,19 @@ public class MainWindow extends JFrame {
 		JMenu mnNewMenu = new JMenu("File");
 		menuBar.add(mnNewMenu);
 		
+		/*
+		 * Add client Config
+		 */
 		JMenuItem mntmNewMenuItem = new JMenuItem("Add client config");
+		mntmNewMenuItem.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+			}
+		});
 		mnNewMenu.add(mntmNewMenuItem);
 		
-		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Add server config");
+		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Add vSwitch config");
 		mnNewMenu.add(mntmNewMenuItem_1);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -81,7 +93,7 @@ public class MainWindow extends JFrame {
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);
 		
-		JList list = new JList();
+		list = new JList();
 		list.setBounds(10, 10, 287, 108);
 		panel_1.add(list);
 		
@@ -90,7 +102,7 @@ public class MainWindow extends JFrame {
 		contentPane.add(panel_2);
 		panel_2.setLayout(null);
 		
-		JList list_1 = new JList();
+		list_1 = new JList();
 		list_1.setBounds(10, 10, 287, 108);
 		panel_2.add(list_1);
 		
