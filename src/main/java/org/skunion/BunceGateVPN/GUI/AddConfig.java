@@ -20,6 +20,7 @@ import java.awt.event.MouseEvent;
 public class AddConfig extends JDialog {
 	
 	private final JPanel contentPanel = new JPanel();
+	private JDialog jd = this;
 	private JTextField switchName;
 	private JTextField hostname;
 	private JTextField portNum;
@@ -76,11 +77,6 @@ public class AddConfig extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		{
-			JLabel lblNewLabel = new JLabel("Switch name");
-			lblNewLabel.setBounds(10, 35, 71, 15);
-			contentPanel.add(lblNewLabel);
-		}
-		{
 			switchName = new JTextField();
 			switchName.setBounds(91, 32, 191, 21);
 			contentPanel.add(switchName);
@@ -90,6 +86,11 @@ public class AddConfig extends JDialog {
 			JLabel lblNewLabel_1 = new JLabel("Hostname");
 			lblNewLabel_1.setBounds(10, 10, 71, 15);
 			contentPanel.add(lblNewLabel_1);
+		}
+		{
+			JLabel lblNewLabel = new JLabel("Switch name");
+			lblNewLabel.setBounds(10, 35, 122, 15);
+			contentPanel.add(lblNewLabel);
 		}
 		{
 			hostname = new JTextField();
@@ -105,7 +106,7 @@ public class AddConfig extends JDialog {
 		}
 		{
 			portNum = new JTextField();
-			portNum.setBounds(315, 7, 47, 21);
+			portNum.setBounds(320, 7, 47, 21);
 			contentPanel.add(portNum);
 			portNum.setColumns(10);
 		}
@@ -141,6 +142,8 @@ public class AddConfig extends JDialog {
 			public void mouseClicked(MouseEvent e) {
 				if(sqlCheck.isSelected())
 					panel.setVisible(true);
+				else if(!sqlCheck.isSelected())
+					panel.setVisible(false);
 			}
 		});
 		sqlCheck.setBounds(10, 143, 97, 23);
@@ -185,7 +188,11 @@ public class AddConfig extends JDialog {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						cfg = new Config();
-						
+						if(t.equals(Config.ConfType.CLIENT)) {//client
+							
+						}else {//server
+							
+						}
 					}
 				});
 				okButton.setActionCommand("OK");
@@ -194,6 +201,12 @@ public class AddConfig extends JDialog {
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
+				cancelButton.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						jd.dispose();
+					}
+				});
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
 			}
