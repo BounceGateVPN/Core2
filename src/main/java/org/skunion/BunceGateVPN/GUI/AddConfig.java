@@ -28,17 +28,15 @@ public class AddConfig extends JDialog {
 	private JPasswordField passwd;
 	private JTextField sqlURL;
 	private JTextField sqlUser;
-	private JTextField sqlPasswd;
 	private JCheckBox sqlCheck;
 	private JPanel panel;
 	private Config cfg;
 	
 	private Config.ConfType t;
 	private JTextField cfgName;
+	private JPasswordField sqlPasswd;
 	
-	/**
-	 * Launch the application.
-	 */
+	/*
 	public static void main(String[] args) {
 		try {
 			AddConfig dialog = new AddConfig();
@@ -48,6 +46,7 @@ public class AddConfig extends JDialog {
 			e.printStackTrace();
 		}
 	}
+	*/
 
 	public AddConfig(Config.ConfType t) {
 		this.t = t;
@@ -174,11 +173,11 @@ public class AddConfig extends JDialog {
 		JLabel lblNewLabel_1_1_1 = new JLabel("Password");
 		lblNewLabel_1_1_1.setBounds(10, 60, 69, 15);
 		panel.add(lblNewLabel_1_1_1);
-		
-		sqlPasswd = new JTextField();
-		sqlPasswd.setColumns(10);
-		sqlPasswd.setBounds(89, 57, 186, 21);
-		panel.add(sqlPasswd);
+		{
+			sqlPasswd = new JPasswordField();
+			sqlPasswd.setBounds(89, 57, 186, 21);
+			panel.add(sqlPasswd);
+		}
 		{
 			cfgName = new JTextField();
 			cfgName.setBounds(91, 7, 191, 21);
@@ -200,8 +199,8 @@ public class AddConfig extends JDialog {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 						cfg = new Config();
+						cfg.setConf(cfgName.getText(), t);
 						if(t.equals(Config.ConfType.CLIENT)) {//client
-							cfg.setConf(cfgName.getText(), t);
 							cfg.pro.setProperty("port", portNum.getText());
 							cfg.pro.setProperty("passwd",String.valueOf(passwd.getPassword()));
 							String host = hostname.getText();
@@ -212,7 +211,16 @@ public class AddConfig extends JDialog {
 							cfg.pro.setProperty("switch", switchName.getText());
 							cfg.saveConf();
 						}else {//server
+							if(sqlCheck.isSelected())
+								cfg.pro.setProperty("SQL","true");
+							else
+								cfg.pro.setProperty("SQL","false");
 							
+							cfg.pro.setProperty("host", sqlURL.getText());
+							cfg.pro.setProperty("user", sqlUser.getText());
+							cfg.pro.setProperty("passwd",String.valueOf(sqlPasswd.getPassword()));
+							cfg.pro.setProperty("switch", switchName.getText());
+							cfg.saveConf();
 						}
 					}
 				});

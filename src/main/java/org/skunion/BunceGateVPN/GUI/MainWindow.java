@@ -2,14 +2,21 @@ package org.skunion.BunceGateVPN.GUI;
 
 import java.awt.EventQueue;
 
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import com.github.smallru8.Secure2.config.Config;
 import com.github.smallru8.util.log.Event.LogEvent;
+import com.github.smallru8.util.log.EventSender;
+import com.mysql.cj.log.Log;
+
+import sun.rmi.server.Util;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -49,6 +56,7 @@ public class MainWindow extends JFrame {
 	 * Create the frame.
 	 */
 	public MainWindow() {
+		EventBus.getDefault().register(this);
 		setTitle("BunceGateVPN");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 651, 422);
@@ -65,13 +73,33 @@ public class MainWindow extends JFrame {
 		JMenuItem mntmNewMenuItem = new JMenuItem("Add client config");
 		mntmNewMenuItem.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				
+			public void mousePressed(MouseEvent e) {
+				try {
+					EventSender.sendLog("Add client config");
+					AddConfig dialog = new AddConfig(Config.ConfType.CLIENT);
+					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					dialog.setVisible(true);
+				} catch (Exception ee) {
+					ee.printStackTrace();
+				}
 			}
 		});
 		mnNewMenu.add(mntmNewMenuItem);
 		
 		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Add vSwitch config");
+		mntmNewMenuItem_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				try {
+					EventSender.sendLog("Add vSwitch config");
+					AddConfig dialog = new AddConfig(Config.ConfType.SERVER);
+					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					dialog.setVisible(true);
+				} catch (Exception ee) {
+					ee.printStackTrace();
+				}
+			}
+		});
 		mnNewMenu.add(mntmNewMenuItem_1);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -85,6 +113,7 @@ public class MainWindow extends JFrame {
 		
 		//console output
 		textArea = new JTextArea();
+		textArea.setEditable(false);
 		textArea.setBounds(10, 10, 278, 320);
 		panel.add(textArea);
 		
