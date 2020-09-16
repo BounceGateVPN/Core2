@@ -133,7 +133,7 @@ public class MainWindow extends JFrame {
 				if(chckbxmntmNewCheckItem.isSelected()) {
 					BGVConfig.bgvConf.setConf("Tap", "true");
 					Main.td.runFlag = true;
-					Main.td.run();
+					Main.td.start();
 				}else {
 					BGVConfig.bgvConf.setConf("Tap", "false");
 					Main.td.runFlag = false;
@@ -248,12 +248,12 @@ public class MainWindow extends JFrame {
 		lblServer.setBounds(318, 168, 46, 21);
 		contentPane.add(lblServer);
 		
-		Main.localVS.run();//啟動Switch
+		Main.localVS.start();//啟動Switch
 		Main.td.startEthernetDev(Main.localVS.addDevice(Main.td));
 		if(BGVConfig.bgvConf.getConf("Tap")!=null&&BGVConfig.bgvConf.getConf("Tap").equalsIgnoreCase("true")) {
 			chckbxmntmNewCheckItem.setSelected(true);
 			Main.td.runFlag = true;
-			Main.td.run();
+			Main.td.start();
 		}else {
 			BGVConfig.bgvConf.setConf("Tap", "false");
 			Main.td.runFlag = false;
