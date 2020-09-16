@@ -11,6 +11,9 @@ import java.util.Base64;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+
+import com.github.smallru8.BounceGateVPN.Router.RouterPort;
+import com.github.smallru8.BounceGateVPN.Switch.SwitchPort;
 import com.github.smallru8.Secure2.DH.DHSender;
 import com.github.smallru8.Secure2.Data.UsrData;
 import com.github.smallru8.Secure2.config.Config;
@@ -163,6 +166,12 @@ public class WS_Client extends WebSocketClient{
 	public void onClose(int code, String reason, boolean remote) {
 		// TODO Auto-generated method stub
 		EventSender.sendLog("Close websocket connection. " + reason);
+		if(sport.type.equals(Port.DeviceType.virtualSwitch)) {
+			((SwitchPort)sport).vs.delDevice(this.hashCode());
+		}else if(sport.type.equals(Port.DeviceType.virtualRouter)) {
+			((RouterPort)sport).vr.delDevice(this.hashCode());
+		}
+		
 	}
 
 	@Override

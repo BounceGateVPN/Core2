@@ -26,12 +26,8 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Properties;
-
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
@@ -134,10 +130,15 @@ public class MainWindow extends JFrame {
 		chckbxmntmNewCheckItem = new JCheckBoxMenuItem("Enable Tap");
 		chckbxmntmNewCheckItem.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-				if(chckbxmntmNewCheckItem.isSelected())
+				if(chckbxmntmNewCheckItem.isSelected()) {
 					BGVConfig.bgvConf.setConf("Tap", "true");
-				else
+					Main.td.runFlag = true;
+					Main.td.run();
+				}else {
 					BGVConfig.bgvConf.setConf("Tap", "false");
+					Main.td.runFlag = false;
+					Main.td.stop();
+				}
 			}
 		});
 		mnNewMenu_1.add(chckbxmntmNewCheckItem);
@@ -247,12 +248,17 @@ public class MainWindow extends JFrame {
 		lblServer.setBounds(318, 168, 46, 21);
 		contentPane.add(lblServer);
 		
+		Main.localVS.run();//啟動Switch
+		Main.td.startEthernetDev(Main.localVS.addDevice(Main.td));
 		if(BGVConfig.bgvConf.getConf("Tap")!=null&&BGVConfig.bgvConf.getConf("Tap").equalsIgnoreCase("true")) {
 			chckbxmntmNewCheckItem.setSelected(true);
-			Main.localVS.run();//啟動Switch
-		}else
+			Main.td.runFlag = true;
+			Main.td.run();
+		}else {
 			BGVConfig.bgvConf.setConf("Tap", "false");
-		
+			Main.td.runFlag = false;
+			Main.td.stop();
+		}
 		editClientCfg.setEnabled(false);
 		editServerCfg.setEnabled(false);
 		refreshJList();

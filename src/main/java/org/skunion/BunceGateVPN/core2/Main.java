@@ -18,7 +18,7 @@ import com.github.smallru8.driver.tuntap.TapDevice;
 public class Main {
 	
 	public static TapDevice td = new TapDevice();
-	public static VirtualSwitch localVS = new VirtualSwitch();//MainWindow.java 252 run()
+	public static VirtualSwitch localVS = new VirtualSwitch();//MainWindow.java 250 run()
 	
 	public static void main( String[] args ) throws SQLException, URISyntaxException, IOException
     {
