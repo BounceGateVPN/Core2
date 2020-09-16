@@ -34,6 +34,7 @@ public class AddConfig extends JDialog {
 	private Config cfg;
 	
 	private Config.ConfType t;
+	private JTextField cfgName;
 	
 	/**
 	 * Launch the application.
@@ -78,57 +79,57 @@ public class AddConfig extends JDialog {
 		contentPanel.setLayout(null);
 		{
 			switchName = new JTextField();
-			switchName.setBounds(91, 32, 191, 21);
+			switchName.setBounds(91, 60, 191, 21);
 			contentPanel.add(switchName);
 			switchName.setColumns(10);
 		}
 		{
 			JLabel lblNewLabel_1 = new JLabel("Hostname");
-			lblNewLabel_1.setBounds(10, 10, 71, 15);
+			lblNewLabel_1.setBounds(10, 35, 71, 15);
 			contentPanel.add(lblNewLabel_1);
 		}
 		{
 			JLabel lblNewLabel = new JLabel("Switch name");
-			lblNewLabel.setBounds(10, 35, 122, 15);
+			lblNewLabel.setBounds(10, 63, 122, 15);
 			contentPanel.add(lblNewLabel);
 		}
 		{
 			hostname = new JTextField();
 			hostname.setText("ws://hostname");
-			hostname.setBounds(91, 7, 191, 21);
+			hostname.setBounds(91, 32, 191, 21);
 			contentPanel.add(hostname);
 			hostname.setColumns(10);
 		}
 		{
 			JLabel lblNewLabel_1 = new JLabel("Port");
-			lblNewLabel_1.setBounds(292, 10, 24, 15);
+			lblNewLabel_1.setBounds(292, 35, 24, 15);
 			contentPanel.add(lblNewLabel_1);
 		}
 		{
 			portNum = new JTextField();
-			portNum.setBounds(320, 7, 47, 21);
+			portNum.setBounds(320, 32, 47, 21);
 			contentPanel.add(portNum);
 			portNum.setColumns(10);
 		}
 		{
 			JLabel lblUserName = new JLabel("User name");
-			lblUserName.setBounds(10, 60, 71, 15);
+			lblUserName.setBounds(10, 91, 71, 15);
 			contentPanel.add(lblUserName);
 		}
 		{
 			userName = new JTextField();
-			userName.setBounds(91, 57, 191, 21);
+			userName.setBounds(91, 88, 191, 21);
 			contentPanel.add(userName);
 			userName.setColumns(10);
 		}
 		{
 			JLabel lblPassword = new JLabel("Password");
-			lblPassword.setBounds(10, 85, 71, 15);
+			lblPassword.setBounds(10, 116, 71, 15);
 			contentPanel.add(lblPassword);
 		}
 		
 		passwd = new JPasswordField();
-		passwd.setBounds(91, 82, 191, 21);
+		passwd.setBounds(91, 116, 191, 21);
 		contentPanel.add(passwd);
 		
 		panel = new JPanel();
@@ -179,6 +180,17 @@ public class AddConfig extends JDialog {
 		sqlPasswd.setBounds(89, 57, 186, 21);
 		panel.add(sqlPasswd);
 		{
+			cfgName = new JTextField();
+			cfgName.setBounds(91, 7, 191, 21);
+			contentPanel.add(cfgName);
+			cfgName.setColumns(10);
+		}
+		{
+			JLabel lblNewLabel_2 = new JLabel("Config name");
+			lblNewLabel_2.setBounds(10, 10, 122, 15);
+			contentPanel.add(lblNewLabel_2);
+		}
+		{
 			JPanel buttonPane = new JPanel();
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
@@ -189,7 +201,16 @@ public class AddConfig extends JDialog {
 					public void mouseClicked(MouseEvent e) {
 						cfg = new Config();
 						if(t.equals(Config.ConfType.CLIENT)) {//client
-							
+							cfg.setConf(cfgName.getText(), t);
+							cfg.pro.setProperty("port", portNum.getText());
+							cfg.pro.setProperty("passwd",String.valueOf(passwd.getPassword()));
+							String host = hostname.getText();
+							if(!(host.startsWith("ws://")||host.startsWith("WS://")))
+								host = "ws://" + host;
+							cfg.pro.setProperty("ip", host);
+							cfg.pro.setProperty("user", userName.getText());
+							cfg.pro.setProperty("switch", switchName.getText());
+							cfg.saveConf();
 						}else {//server
 							
 						}
