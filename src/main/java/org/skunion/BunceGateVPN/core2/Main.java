@@ -22,6 +22,9 @@ public class Main {
 	
 	public static void main( String[] args ) throws SQLException, URISyntaxException, IOException
     {
+		//localVS.start();
+		//Main.td.startEthernetDev(localVS.addDevice(td));
+		//Main.td.start();
 		if(args[0].equalsIgnoreCase("-s")) {//server
 			Config vSwitch = new Config();
 			vSwitch.setConf("defaultSwitch", Config.ConfType.SERVER);//建default vSwitch
@@ -47,6 +50,7 @@ public class Main {
     		cli.connect();
     		
     	}
+    	
 		System.out.println("Running...Press any key to stop.");
     	System.in.read();
     }
