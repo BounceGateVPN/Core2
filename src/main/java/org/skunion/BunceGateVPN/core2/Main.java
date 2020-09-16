@@ -9,12 +9,17 @@ import java.sql.SQLException;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Client;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Server;
 
+import com.github.smallru8.BounceGateVPN.Switch.VirtualSwitch;
 import com.github.smallru8.Secure2.Secure2;
 import com.github.smallru8.Secure2.SQL.SQL;
 import com.github.smallru8.Secure2.config.Config;
+import com.github.smallru8.driver.tuntap.TapDevice;
 
 public class Main {
-	///UTF-8編碼後要BASE64 不然解密會bug
+	
+	public static TapDevice td = new TapDevice();
+	public static VirtualSwitch localVS = new VirtualSwitch();//MainWindow.java 252 run()
+	
 	public static void main( String[] args ) throws SQLException, URISyntaxException, IOException
     {
 		if(args[0].equalsIgnoreCase("-s")) {//server

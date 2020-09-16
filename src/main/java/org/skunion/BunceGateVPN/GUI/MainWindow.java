@@ -10,13 +10,12 @@ import javax.swing.border.EmptyBorder;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.skunion.BunceGateVPN.core2.BGVConfig;
+import org.skunion.BunceGateVPN.core2.Main;
 
 import com.github.smallru8.Secure2.config.Config;
 import com.github.smallru8.util.log.Event.LogEvent;
 import com.github.smallru8.util.log.EventSender;
-import com.mysql.cj.log.Log;
-
-import sun.rmi.server.Util;
 
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
@@ -27,6 +26,18 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+
+import javax.swing.JButton;
+import javax.swing.border.LineBorder;
+import java.awt.Color;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
 
 public class MainWindow extends JFrame {
 
@@ -35,7 +46,13 @@ public class MainWindow extends JFrame {
 	private JTextField textField;
 	private JList list;//client
 	private JList list_1;//server
-
+	private JButton editClientCfg;
+	private JButton editServerCfg;
+	private JCheckBoxMenuItem chckbxmntmNewCheckItem;
+	
+	private String path0 = "config/client/";
+	private String path1 = "config/server/";
+	
 	/**
 	 * Launch the application.
 	 */
@@ -84,6 +101,15 @@ public class MainWindow extends JFrame {
 				}
 			}
 		});
+		
+		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Refresh");
+		mntmNewMenuItem_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				refreshJList();//refresh JList
+			}
+		});
+		mnNewMenu.add(mntmNewMenuItem_2);
 		mnNewMenu.add(mntmNewMenuItem);
 		
 		JMenuItem mntmNewMenuItem_1 = new JMenuItem("Add vSwitch config");
@@ -101,12 +127,27 @@ public class MainWindow extends JFrame {
 			}
 		});
 		mnNewMenu.add(mntmNewMenuItem_1);
+		
+		JMenu mnNewMenu_1 = new JMenu("TunTap");
+		menuBar.add(mnNewMenu_1);
+		
+		chckbxmntmNewCheckItem = new JCheckBoxMenuItem("Enable Tap");
+		chckbxmntmNewCheckItem.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				if(chckbxmntmNewCheckItem.isSelected())
+					BGVConfig.bgvConf.setConf("Tap", "true");
+				else
+					BGVConfig.bgvConf.setConf("Tap", "false");
+			}
+		});
+		mnNewMenu_1.add(chckbxmntmNewCheckItem);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
 		JPanel panel = new JPanel();
+		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		panel.setBounds(10, 10, 298, 340);
 		contentPane.add(panel);
 		panel.setLayout(null);
@@ -118,22 +159,76 @@ public class MainWindow extends JFrame {
 		panel.add(textArea);
 		
 		JPanel panel_1 = new JPanel();
+		panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
 		panel_1.setBounds(318, 30, 307, 128);
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);
 		
 		list = new JList();
-		list.setBounds(10, 10, 287, 108);
+		list.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if(!list.isSelectionEmpty()) {
+					editClientCfg.setEnabled(true);
+				}else {
+					editClientCfg.setEnabled(false);
+				}
+			}
+		});
+		list.setBounds(10, 10, 219, 108);
 		panel_1.add(list);
 		
+		editClientCfg = new JButton("Edit");
+		editClientCfg.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {//編輯 client config
+				String str = ((String) list.getSelectedValue()).split("\\.")[0];
+				Config cfgTmp = new Config();
+				cfgTmp.setConf(str, Config.ConfType.CLIENT);
+				
+				AddConfig aConf = new AddConfig(cfgTmp,Config.ConfType.CLIENT);
+				aConf.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				aConf.setVisible(true);
+			}
+		});
+		editClientCfg.setBounds(239, 10, 58, 23);
+		panel_1.add(editClientCfg);
+		
 		JPanel panel_2 = new JPanel();
+		panel_2.setBorder(new LineBorder(new Color(0, 0, 0)));
 		panel_2.setBounds(318, 188, 307, 128);
 		contentPane.add(panel_2);
 		panel_2.setLayout(null);
 		
 		list_1 = new JList();
-		list_1.setBounds(10, 10, 287, 108);
+		list_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if(!list_1.isSelectionEmpty()) {
+					editServerCfg.setEnabled(true);
+				}else {
+					editServerCfg.setEnabled(false);
+				}
+			}
+		});
+		list_1.setBounds(10, 10, 219, 108);
 		panel_2.add(list_1);
+		
+		editServerCfg = new JButton("Edit");
+		editServerCfg.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {//編輯 vSwitch config
+				String str = ((String) list_1.getSelectedValue()).split("\\.")[0];
+				Config cfgTmp = new Config();
+				cfgTmp.setConf(str, Config.ConfType.SERVER);
+				
+				AddConfig aConf = new AddConfig(cfgTmp,Config.ConfType.SERVER);
+				aConf.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				aConf.setVisible(true);
+			}
+		});
+		editServerCfg.setBounds(239, 10, 58, 23);
+		panel_2.add(editServerCfg);
 		
 		textField = new JTextField();
 		textField.setBounds(363, 329, 251, 21);
@@ -151,6 +246,38 @@ public class MainWindow extends JFrame {
 		JLabel lblServer = new JLabel("Server");
 		lblServer.setBounds(318, 168, 46, 21);
 		contentPane.add(lblServer);
+		
+		if(BGVConfig.bgvConf.getConf("Tap")!=null&&BGVConfig.bgvConf.getConf("Tap").equalsIgnoreCase("true")) {
+			chckbxmntmNewCheckItem.setSelected(true);
+			Main.localVS.run();//啟動Switch
+		}else
+			BGVConfig.bgvConf.setConf("Tap", "false");
+		
+		editClientCfg.setEnabled(false);
+		editServerCfg.setEnabled(false);
+		refreshJList();
+	}
+	
+	public void refreshJList() {
+		if(!new File("config").exists())
+			new File("config").mkdirs();
+		if(!new File("config/server").exists())
+			new File("config/server").mkdirs();
+		if(!new File("config/client").exists())
+			new File("config/client").mkdirs();
+		if(!new File("config/bgv.conf").exists())
+			try {
+				new File("config/bgv.conf").createNewFile();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		File f = new File(path0);
+		String[] clientCfgLs = f.list();
+		f = new File(path1);
+		String[] serverCfgLs = f.list();
+		list.setListData(clientCfgLs);
+		list_1.setListData(serverCfgLs);
 	}
 	
 	@Subscribe(threadMode = ThreadMode.MAIN)

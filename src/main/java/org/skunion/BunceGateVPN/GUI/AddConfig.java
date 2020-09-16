@@ -48,6 +48,42 @@ public class AddConfig extends JDialog {
 	}
 	*/
 
+	public AddConfig(Config cfg,Config.ConfType t) {
+		this.t = t;
+		createUI();
+		this.setTitle("Edit : " + cfg.confName);
+		cfgName.setText(cfg.confName);
+		
+		if(t.equals(Config.ConfType.CLIENT)) {//Client config
+			this.setTitle("Add a new client config");
+			sqlCheck.setEnabled(false);
+			
+			portNum.setText(cfg.pro.getProperty("port"));
+			passwd.setText(cfg.pro.getProperty("passwd"));
+			hostname.setText(cfg.pro.getProperty("ip"));
+			userName.setText(cfg.pro.getProperty("user"));
+			switchName.setText(cfg.pro.getProperty("switch"));
+			
+		}else {//Server config
+			this.setTitle("Add a new virtual switch config");
+			hostname.setText("");
+			hostname.setEditable(false);
+			portNum.setEditable(false);
+			userName.setEditable(false);
+			passwd.setEditable(false);
+			
+			if(cfg.pro.getProperty("SQL").equalsIgnoreCase("TRUE"))
+				sqlCheck.setSelected(true);
+			else
+				sqlCheck.setSelected(false);
+			sqlURL.setText(cfg.pro.getProperty("host"));
+			sqlUser.setText(cfg.pro.getProperty("user"));
+			sqlPasswd.setText(cfg.pro.getProperty("passwd"));
+			switchName.setText(cfg.pro.getProperty("switch"));
+		}
+		
+	}
+	
 	public AddConfig(Config.ConfType t) {
 		this.t = t;
 		createUI();
