@@ -128,13 +128,16 @@ public class MainWindow extends JFrame {
 		menuBar.add(mnNewMenu_1);
 		
 		chckbxmntmNewCheckItem = new JCheckBoxMenuItem("Enable Tap");
-		chckbxmntmNewCheckItem.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
+		chckbxmntmNewCheckItem.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
 				if(chckbxmntmNewCheckItem.isSelected()) {
+					EventSender.sendLog("Tap device enable.");
 					BGVConfig.bgvConf.setConf("Tap", "true");
 					Main.td.runFlag = true;
 					Main.td.start();
 				}else if(!chckbxmntmNewCheckItem.isSelected()){
+					EventSender.sendLog("Tap device disable.");
 					BGVConfig.bgvConf.setConf("Tap", "false");
 					Main.td.runFlag = false;
 					Main.td.stop();
@@ -253,7 +256,7 @@ public class MainWindow extends JFrame {
 		if(BGVConfig.bgvConf.getConf("Tap")!=null&&BGVConfig.bgvConf.getConf("Tap").equalsIgnoreCase("true")) {
 			chckbxmntmNewCheckItem.setSelected(true);
 			Main.td.runFlag = true;
-			Main.td.start();//BUG
+			Main.td.start();
 		}else {
 			BGVConfig.bgvConf.setConf("Tap", "false");
 			Main.td.runFlag = false;
