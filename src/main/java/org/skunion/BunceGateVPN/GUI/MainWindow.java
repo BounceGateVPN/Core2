@@ -134,7 +134,7 @@ public class MainWindow extends JFrame {
 					BGVConfig.bgvConf.setConf("Tap", "true");
 					Main.td.runFlag = true;
 					Main.td.start();
-				}else {
+				}else if(!chckbxmntmNewCheckItem.isSelected()){
 					BGVConfig.bgvConf.setConf("Tap", "false");
 					Main.td.runFlag = false;
 					Main.td.stop();
