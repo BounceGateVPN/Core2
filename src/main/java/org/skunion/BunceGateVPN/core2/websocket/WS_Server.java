@@ -32,7 +32,7 @@ public class WS_Server extends WebSocketServer{
 	public final Base64.Encoder encoder = Base64.getEncoder();
 	
 	public static Map<String,Pair<Config,VirtualSwitch>> switchLs = new HashMap<>();//SwitchName,<switch config,switch>
-	public static Map<WebSocket,WS_Package> WSRecord = new HashMap<>();//Connection list
+	public Map<WebSocket,WS_Package> WSRecord = new HashMap<>();//Connection list
 	
 	public WS_Server(InetSocketAddress address) {
 		super(address);
@@ -50,6 +50,7 @@ public class WS_Server extends WebSocketServer{
 	public void onClose(WebSocket conn, int code, String reason, boolean remote) {
 		// TODO Auto-generated method stub
 		String ip = conn.getRemoteSocketAddress().getAddress().getHostAddress();
+		WSRecord.remove(conn);
 		EventSender.sendLog("IP : "+ip+" disconnected. Due to "+reason);
 	}
 

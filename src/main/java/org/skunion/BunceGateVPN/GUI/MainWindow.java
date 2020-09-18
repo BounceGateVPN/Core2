@@ -145,6 +145,12 @@ public class MainWindow extends JFrame {
 			}
 		});
 		mnNewMenu_1.add(chckbxmntmNewCheckItem);
+		
+		JMenu mnNewMenu_2 = new JMenu("Setting");
+		menuBar.add(mnNewMenu_2);
+		
+		JMenuItem mntmNewMenuItem_3 = new JMenuItem("Listen port");
+		mnNewMenu_2.add(mntmNewMenuItem_3);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
