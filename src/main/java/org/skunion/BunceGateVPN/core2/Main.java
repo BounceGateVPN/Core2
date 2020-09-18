@@ -5,6 +5,8 @@ import java.net.InetSocketAddress;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.skunion.BunceGateVPN.core2.websocket.WS_Client;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Server;
@@ -18,13 +20,14 @@ import com.github.smallru8.driver.tuntap.TapDevice;
 public class Main {
 	
 	public static TapDevice td = new TapDevice();
-	public static VirtualSwitch localVS = new VirtualSwitch();//MainWindow.java 250 run()
+	public static VirtualSwitch localVS = new VirtualSwitch();
+	
+	public static Map<String,WS_Server> WS_Server_List = new HashMap<String, WS_Server>();//Listen port number,WS_Server
 	
 	public static void main( String[] args ) throws SQLException, URISyntaxException, IOException
     {
-		//localVS.start();
-		//Main.td.startEthernetDev(localVS.addDevice(td));
-		//Main.td.start();
+		onBGVStart();
+		
 		if(args[0].equalsIgnoreCase("-s")) {//server
 			Config vSwitch = new Config();
 			vSwitch.setConf("defaultSwitch", Config.ConfType.SERVER);//建default vSwitch
@@ -54,5 +57,43 @@ public class Main {
 		System.out.println("Running...Press any key to stop.");
     	System.in.read();
     }
+	
+	private static void onBGVStart() {
+		/**
+		 * Start local vSwitch
+		 */
+		Main.localVS.start();
+		
+		/**
+		 * Start Tap device
+		 */
+		Main.td.startEthernetDev(Main.localVS.addDevice(Main.td));
+		if(BGVConfig.bgvConf.getConf("Tap")!=null&&BGVConfig.bgvConf.getConf("Tap").equalsIgnoreCase("true")) {
+			Main.td.runFlag = true;
+			Main.td.start();
+		}else {
+			BGVConfig.bgvConf.setConf("Tap", "false");
+			Main.td.runFlag = false;
+		}
+		
+		/**
+		 * Get listen port list from BGV.conf and start WS_Server.
+		 * WS_Server will store in WS_Server_List.
+		 */
+		String portLs = BGVConfig.bgvConf.getConf("Listen");
+		if(portLs!=null) {
+			String[] portArray = portLs.split(",");
+			for(int i=0;i<portArray.length;i++) {
+				if(!portArray[i].equals("")) {
+					InetSocketAddress addr = new InetSocketAddress("0.0.0.0",Integer.parseInt(portArray[i]));
+					WS_Server sv = new WS_Server(addr);
+		    		sv.start();
+					WS_Server_List.put(portArray[i],sv);
+				}
+			}
+		}else {
+			BGVConfig.bgvConf.setConf("Listen", ",");
+		}
+	}
 	
 }

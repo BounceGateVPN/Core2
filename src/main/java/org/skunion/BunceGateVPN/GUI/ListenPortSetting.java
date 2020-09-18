@@ -134,8 +134,6 @@ public class ListenPortSetting extends JDialog {
 				if(!portArray[i].equals(""))
 					model.addElement(portArray[i]);
 			}
-		}else {
-			BGVConfig.bgvConf.setConf("Listen", ",");
 		}
 	}
 

@@ -32,8 +32,6 @@ import javax.swing.JButton;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ChangeEvent;
 
 public class MainWindow extends JFrame {
 
@@ -257,17 +255,9 @@ public class MainWindow extends JFrame {
 		lblServer.setBounds(318, 168, 46, 21);
 		contentPane.add(lblServer);
 		
-		Main.localVS.start();//啟動Switch
-		Main.td.startEthernetDev(Main.localVS.addDevice(Main.td));
-		if(BGVConfig.bgvConf.getConf("Tap")!=null&&BGVConfig.bgvConf.getConf("Tap").equalsIgnoreCase("true")) {
+		if(BGVConfig.bgvConf.getConf("Tap")!=null&&BGVConfig.bgvConf.getConf("Tap").equalsIgnoreCase("true"))
 			chckbxmntmNewCheckItem.setSelected(true);
-			Main.td.runFlag = true;
-			Main.td.start();
-		}else {
-			BGVConfig.bgvConf.setConf("Tap", "false");
-			Main.td.runFlag = false;
-			Main.td.stop();
-		}
+		
 		editClientCfg.setEnabled(false);
 		editServerCfg.setEnabled(false);
 		refreshJList();
