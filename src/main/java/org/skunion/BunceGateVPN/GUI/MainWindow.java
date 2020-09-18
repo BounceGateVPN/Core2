@@ -182,6 +182,10 @@ public class MainWindow extends JFrame {
 					editClientCfg.setEnabled(false);
 				}
 			}
+			@Override
+			public void mouseClicked(MouseEvent e) {//Double click to connect
+				
+			}
 		});
 		list.setBounds(10, 10, 219, 108);
 		panel_1.add(list);

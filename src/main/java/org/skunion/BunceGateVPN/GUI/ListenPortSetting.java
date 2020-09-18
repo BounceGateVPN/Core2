@@ -12,6 +12,9 @@ import javax.swing.JList;
 import javax.swing.border.LineBorder;
 
 import org.skunion.BunceGateVPN.core2.BGVConfig;
+import org.skunion.BunceGateVPN.core2.Main;
+import org.skunion.BunceGateVPN.core2.websocket.WS_Server;
+
 import com.github.smallru8.util.RegularExpression;
 
 import java.awt.Color;
@@ -19,6 +22,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -70,8 +75,15 @@ public class ListenPortSetting extends JDialog {
 			addButton.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {//Add port
-					if(RegularExpression.isDigitOnly(portField.getText())) {
-						model.addElement(portField.getText());
+					String tmp = portField.getText();
+					if(RegularExpression.isDigitOnly(tmp)) {
+						model.addElement(tmp);
+						
+						InetSocketAddress addr = new InetSocketAddress("0.0.0.0",Integer.parseInt(tmp));
+						WS_Server sv = new WS_Server(addr);
+			    		sv.start();
+						Main.WS_Server_List.put(tmp,sv);
+						
 						String portLs = BGVConfig.bgvConf.getConf("Listen");
 						portLs+=portField.getText()+",";
 						BGVConfig.bgvConf.setConf("Listen", portLs);
@@ -90,12 +102,20 @@ public class ListenPortSetting extends JDialog {
 						int index = portList.getSelectedIndex();
 						String value = (String) portList.getSelectedValue();
 						model.remove(index);
+						try {
+							Main.WS_Server_List.get(value).stop(1000);
+						} catch (InterruptedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						Main.WS_Server_List.remove(value);
 						ArrayList<String> portArray = new ArrayList<String>(Arrays.asList((BGVConfig.bgvConf.getConf("Listen")).split(",")));
 						portArray.remove(value);
 						String portLs = "";
 						for(int i=0;i<portArray.size();i++)
 							portLs+=portArray.get(i)+",";
 						BGVConfig.bgvConf.setConf("Listen", portLs);
+						
 					}
 				}
 			});

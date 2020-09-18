@@ -20,7 +20,7 @@ import com.github.smallru8.driver.tuntap.TapDevice;
 public class Main {
 	
 	public static TapDevice td = new TapDevice();
-	public static VirtualSwitch localVS = new VirtualSwitch();
+	public static VirtualSwitch localVS = new LocalhostVirtualSwitch();
 	
 	public static Map<String,WS_Server> WS_Server_List = new HashMap<String, WS_Server>();//Listen port number,WS_Server
 	
