@@ -16,13 +16,15 @@ import com.github.smallru8.Secure2.Secure2;
 import com.github.smallru8.Secure2.SQL.SQL;
 import com.github.smallru8.Secure2.config.Config;
 import com.github.smallru8.driver.tuntap.TapDevice;
+import com.github.smallru8.util.log.EventSender;
 
 public class Main {
 	
 	public static TapDevice td = new TapDevice();
 	public static VirtualSwitch localVS = new LocalhostVirtualSwitch();
 	
-	public static Map<String,WS_Server> WS_Server_List = new HashMap<String, WS_Server>();//Listen port number,WS_Server
+	public static Map<String,WS_Client> WS_Client_List = new HashMap<String,WS_Client>();//configName.conf,WS_Client
+	public static Map<String,WS_Server> WS_Server_List = new HashMap<String,WS_Server>();//Listen port number,WS_Server
 	
 	public static void main( String[] args ) throws SQLException, URISyntaxException, IOException
     {
@@ -63,14 +65,16 @@ public class Main {
 		 * Start local vSwitch
 		 */
 		Main.localVS.start();
-		
+		EventSender.sendLog("Starting local switch.");
 		/**
 		 * Start Tap device
 		 */
 		Main.td.startEthernetDev(Main.localVS.addDevice(Main.td));
+		EventSender.sendLog("Register tap device.");
 		if(BGVConfig.bgvConf.getConf("Tap")!=null&&BGVConfig.bgvConf.getConf("Tap").equalsIgnoreCase("true")) {
 			Main.td.runFlag = true;
 			Main.td.start();
+			EventSender.sendLog("Starting tap device.");
 		}else {
 			BGVConfig.bgvConf.setConf("Tap", "false");
 			Main.td.runFlag = false;
@@ -89,6 +93,7 @@ public class Main {
 					WS_Server sv = new WS_Server(addr);
 		    		sv.start();
 					WS_Server_List.put(portArray[i],sv);
+					EventSender.sendLog("Open websocket server, listen on port : " + portArray[i]);
 				}
 			}
 		}else {

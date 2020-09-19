@@ -39,7 +39,7 @@ public class WS_Client extends WebSocketClient{
 	public UsrData ud;
 	public Port sport; //Switch port
 	
-	public WS_Client(Config cfg) throws URISyntaxException {
+	public WS_Client(Config cfg) throws URISyntaxException{
 		super(new URI(cfg.host + ":" + cfg.port));
 		ud = new UsrData();//初始化user data
 		ud.setNamePasswd(cfg.userName, cfg.passwd);
@@ -81,7 +81,7 @@ public class WS_Client extends WebSocketClient{
 	 */
 	@Override
 	public void send(String text) {
-		if(!readyFlag)
+		if(!ud.readyFlag)//Send public key
 			super.send(text);
 		else {
 			try {
@@ -98,7 +98,8 @@ public class WS_Client extends WebSocketClient{
 	 */
 	@Override
 	public void send(ByteBuffer bytes) {
-		super.send(ud.dh.encrypt(bytes.array()));
+		if(readyFlag)
+			super.send(ud.dh.encrypt(bytes.array()));
 	}
 	
 	@Override
@@ -115,7 +116,7 @@ public class WS_Client extends WebSocketClient{
 		// TODO Auto-generated method stub
 		if(!ud.readyFlag) {
 			ud.readyFlag = true;
-			readyFlag = true;
+			//readyFlag = true;
 			
 			((DHSender)ud.dh).initAESKey(decoder.decode(message));///
 			//System.out.println("Server pubk : "+message);////////
@@ -147,7 +148,7 @@ public class WS_Client extends WebSocketClient{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+			readyFlag = true;
 		}
 	}
 	

@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.border.EmptyBorder;
 
 import org.greenrobot.eventbus.EventBus;
@@ -12,6 +13,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.skunion.BunceGateVPN.core2.BGVConfig;
 import org.skunion.BunceGateVPN.core2.Main;
+import org.skunion.BunceGateVPN.core2.websocket.WS_Client;
 
 import com.github.smallru8.Secure2.config.Config;
 import com.github.smallru8.util.log.Event.LogEvent;
@@ -22,12 +24,15 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
@@ -176,7 +181,48 @@ public class MainWindow extends JFrame {
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				if(!list.isSelectionEmpty()) {
+				if (!list.isSelectionEmpty()&&SwingUtilities.isRightMouseButton(e)) {
+					editClientCfg.setEnabled(true);
+	                JPopupMenu menu = new JPopupMenu();
+	                JMenuItem item;
+	                String nameConf = (String) list.getSelectedValue();
+	                if(Main.WS_Client_List.containsKey(nameConf)) {
+	                	item = new JMenuItem("Disconnect");
+	                	item.addMouseListener(new MouseAdapter() {
+	                		@Override
+	            			public void mousePressed(MouseEvent e) {//中斷連線
+	                			WS_Client tmpWS = Main.WS_Client_List.get((String) list.getSelectedValue());
+	                			EventSender.sendLog("Close connection : " + tmpWS.ud.sessionName);
+	                			Main.localVS.delDevice(tmpWS.hashCode());
+	                			tmpWS.close();
+	                			Main.WS_Client_List.remove((String) list.getSelectedValue());
+	                		}
+	                	});
+	                }else {//連線
+	                	item = new JMenuItem("Connect");
+	                	item.addMouseListener(new MouseAdapter() {
+	                		@Override
+	            			public void mousePressed(MouseEvent e) {//連線
+	                			Config cfg = new Config();
+	                			cfg.setConf(((String) list.getSelectedValue()).split("\\.")[0], Config.ConfType.CLIENT);
+	                			try {
+									WS_Client tmpWS = new WS_Client(cfg);
+									tmpWS.setPort(Main.localVS.addDevice(tmpWS));
+									tmpWS.connect();
+									Main.WS_Client_List.put((String) list.getSelectedValue(), tmpWS);
+								} catch (URISyntaxException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+	                		}
+	                	});
+	                }
+	                
+	                menu.add(item);
+	                menu.show(list, 5, list.getCellBounds(
+	                		list.getSelectedIndex(),
+	                		list.getSelectedIndex()).y);
+	            }else if(!list.isSelectionEmpty()) {
 					editClientCfg.setEnabled(true);
 				}else {
 					editClientCfg.setEnabled(false);
@@ -184,7 +230,25 @@ public class MainWindow extends JFrame {
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {//Double click to connect
-				
+				JList list = (JList)e.getSource();
+		        if (e.getClickCount() == 2) {
+		            // Double-click detected
+		            int index = list.locationToIndex(e.getPoint());
+		            String nameConf = (String) list.getModel().getElementAt(index);
+		            if(Main.WS_Client_List.containsKey(nameConf)) {//連線
+		            	Config cfg = new Config();
+            			cfg.setConf(((String) list.getSelectedValue()).split("\\.")[0], Config.ConfType.CLIENT);
+            			try {
+							WS_Client tmpWS = new WS_Client(cfg);
+							tmpWS.setPort(Main.localVS.addDevice(tmpWS));
+							tmpWS.connect();
+							Main.WS_Client_List.put((String) list.getSelectedValue(), tmpWS);
+						} catch (URISyntaxException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+		            }
+		        }
 			}
 		});
 		list.setBounds(10, 10, 219, 108);
