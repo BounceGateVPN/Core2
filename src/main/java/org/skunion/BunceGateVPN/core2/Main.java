@@ -4,7 +4,6 @@ import java.awt.EventQueue;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URISyntaxException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,11 +11,7 @@ import java.util.Map;
 import org.skunion.BunceGateVPN.GUI.MainWindow;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Client;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Server;
-
 import com.github.smallru8.BounceGateVPN.Switch.VirtualSwitch;
-import com.github.smallru8.Secure2.Secure2;
-import com.github.smallru8.Secure2.SQL.SQL;
-import com.github.smallru8.Secure2.config.Config;
 import com.github.smallru8.driver.tuntap.TapDevice;
 import com.github.smallru8.util.log.EventSender;
 

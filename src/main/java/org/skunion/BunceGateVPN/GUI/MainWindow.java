@@ -1,7 +1,5 @@
 package org.skunion.BunceGateVPN.GUI;
 
-import java.awt.EventQueue;
-
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -43,8 +41,8 @@ public class MainWindow extends JFrame {
 	private JPanel contentPane;
 	private JTextArea textArea;
 	private JTextField textField;
-	private JList list;//client
-	private JList list_1;//server
+	private JList<String> list;//client
+	private JList<String> list_1;//server
 	private JButton editClientCfg;
 	private JButton editServerCfg;
 	private JCheckBoxMenuItem chckbxmntmNewCheckItem;
@@ -55,7 +53,7 @@ public class MainWindow extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	
+	/*
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -68,7 +66,8 @@ public class MainWindow extends JFrame {
 			}
 		});
 	}
-
+	*/
+	
 	/**
 	 * Create the frame.
 	 */
@@ -190,7 +189,7 @@ public class MainWindow extends JFrame {
 		contentPane.add(panel_1);
 		panel_1.setLayout(null);
 		
-		list = new JList();
+		list = new JList<String>();
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -291,7 +290,7 @@ public class MainWindow extends JFrame {
 		contentPane.add(panel_2);
 		panel_2.setLayout(null);
 		
-		list_1 = new JList();
+		list_1 = new JList<String>();
 		list_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {

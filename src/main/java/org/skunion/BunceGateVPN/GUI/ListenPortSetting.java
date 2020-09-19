@@ -31,10 +31,10 @@ public class ListenPortSetting extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JDialog jd = this;
 	private JTextField portField;
-	private JList portList;
+	private JList<String> portList;
 	private JButton addButton;
 	private JButton deleteButton;
-	private DefaultListModel model = new DefaultListModel();
+	private DefaultListModel<String> model = new DefaultListModel<String>();
 	/**
 	 * Launch the application.
 	 */
@@ -61,7 +61,7 @@ public class ListenPortSetting extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		{
-			portList = new JList(model);
+			portList = new JList<String>(model);
 			portList.setBorder(new LineBorder(new Color(0, 0, 0)));
 			portList.setBounds(10, 36, 93, 182);
 			contentPanel.add(portList);
