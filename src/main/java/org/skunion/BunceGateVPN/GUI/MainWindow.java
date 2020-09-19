@@ -181,7 +181,9 @@ public class MainWindow extends JFrame {
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				if (!list.isSelectionEmpty()&&SwingUtilities.isRightMouseButton(e)) {
+				int index = list.locationToIndex(e.getPoint());
+				if (SwingUtilities.isRightMouseButton(e)&&index!=-1) {
+					list.setSelectedIndex(index);
 					editClientCfg.setEnabled(true);
 	                JPopupMenu menu = new JPopupMenu();
 	                JMenuItem item;
@@ -207,6 +209,7 @@ public class MainWindow extends JFrame {
 	                			cfg.setConf(((String) list.getSelectedValue()).split("\\.")[0], Config.ConfType.CLIENT);
 	                			try {
 									WS_Client tmpWS = new WS_Client(cfg);
+									EventSender.sendLog("Starting connection : " + tmpWS.ud.sessionName);
 									tmpWS.setPort(Main.localVS.addDevice(tmpWS));
 									tmpWS.connect();
 									Main.WS_Client_List.put((String) list.getSelectedValue(), tmpWS);
@@ -219,9 +222,7 @@ public class MainWindow extends JFrame {
 	                }
 	                
 	                menu.add(item);
-	                menu.show(list, 5, list.getCellBounds(
-	                		list.getSelectedIndex(),
-	                		list.getSelectedIndex()).y);
+	                menu.show(list, e.getPoint().x, e.getPoint().y);
 	            }else if(!list.isSelectionEmpty()) {
 					editClientCfg.setEnabled(true);
 				}else {
@@ -240,6 +241,7 @@ public class MainWindow extends JFrame {
             			cfg.setConf(((String) list.getSelectedValue()).split("\\.")[0], Config.ConfType.CLIENT);
             			try {
 							WS_Client tmpWS = new WS_Client(cfg);
+							EventSender.sendLog("Starting connection : " + tmpWS.ud.sessionName);
 							tmpWS.setPort(Main.localVS.addDevice(tmpWS));
 							tmpWS.connect();
 							Main.WS_Client_List.put((String) list.getSelectedValue(), tmpWS);

@@ -11,6 +11,7 @@ import java.util.Base64;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+import org.skunion.BunceGateVPN.core2.Main;
 
 import com.github.smallru8.BounceGateVPN.Router.RouterPort;
 import com.github.smallru8.BounceGateVPN.Switch.SwitchPort;
@@ -30,7 +31,6 @@ import com.github.smallru8.util.log.EventSender;
  *
  */
 public class WS_Client extends WebSocketClient{
-
 
 	public final Base64.Decoder decoder = Base64.getDecoder();
 	public final Base64.Encoder encoder = Base64.getEncoder();
@@ -65,15 +65,32 @@ public class WS_Client extends WebSocketClient{
 	public void connect() {
 		super.connect();
 		try {
-			Thread.sleep(3000);
-			EventSender.sendLog("Start sending public key to server.");
-			//System.out.println("Client pubk : "+encoder.encodeToString(ud.dh.getPublicKey()));///////////
-			
-			this.send(encoder.encodeToString(ud.dh.getPublicKey()));//送出publickey, 以UTF-8編碼
+			int counter = 0;
+			while(!isOpen()&&counter<3) {
+				Thread.sleep(3000);
+				counter++;
+			}
+			if(isOpen()) {
+				EventSender.sendLog("Start sending public key to server.");
+				//System.out.println("Client pubk : "+encoder.encodeToString(ud.dh.getPublicKey()));///////////
+				this.send(encoder.encodeToString(ud.dh.getPublicKey()));//送出publickey, 以UTF-8編碼
+			}else
+				EventSender.sendLog(Event.LogEvent.Type.ERROR,"Can't connect to " + ud.destSwitchName + "@" + ud.IPaddr + ":" + ud.port);
+				close();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * 要根據持有這個WS_Client的VirtualSwitch/VirtualRouter,在new時在Override一次這個method
+	 */
+	@Override
+	public void close() {
+		Main.localVS.delDevice(this.hashCode());
+		Main.WS_Client_List.remove(ud.sessionName+".conf");
+		super.close();
 	}
 	
 	/**
