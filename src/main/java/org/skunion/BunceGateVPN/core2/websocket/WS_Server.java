@@ -140,7 +140,7 @@ public class WS_Server extends WebSocketServer{
 	@Override
 	public void onStart() {
 		// TODO Auto-generated method stub
-		EventSender.sendLog("BGV-Server starting...");
+		EventSender.sendLog("Open websocket server, listen on port : " + this.getPort());
 	}
 
 	/*------------------------------------------------------------------------------------------------*/

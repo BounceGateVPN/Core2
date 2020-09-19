@@ -38,6 +38,7 @@ public class ListenPortSetting extends JDialog {
 	/**
 	 * Launch the application.
 	 */
+	/*
 	public static void main(String[] args) {
 		try {
 			ListenPortSetting dialog = new ListenPortSetting();
@@ -47,7 +48,8 @@ public class ListenPortSetting extends JDialog {
 			e.printStackTrace();
 		}
 	}
-
+	 */
+	
 	/**
 	 * Create the dialog.
 	 */

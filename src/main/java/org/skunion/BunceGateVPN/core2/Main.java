@@ -1,5 +1,6 @@
 package org.skunion.BunceGateVPN.core2;
 
+import java.awt.EventQueue;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URISyntaxException;
@@ -8,6 +9,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.skunion.BunceGateVPN.GUI.MainWindow;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Client;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Server;
 
@@ -28,8 +30,20 @@ public class Main {
 	
 	public static void main( String[] args ) throws SQLException, URISyntaxException, IOException
     {
-		onBGVStart();
 		
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					MainWindow frame = new MainWindow();
+					frame.setVisible(true);
+					onBGVStart();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		/*
 		if(args[0].equalsIgnoreCase("-s")) {//server
 			Config vSwitch = new Config();
 			vSwitch.setConf("defaultSwitch", Config.ConfType.SERVER);//建default vSwitch
@@ -58,6 +72,7 @@ public class Main {
     	
 		System.out.println("Running...Press any key to stop.");
     	System.in.read();
+    	*/
     }
 	
 	private static void onBGVStart() {
@@ -93,12 +108,13 @@ public class Main {
 					WS_Server sv = new WS_Server(addr);
 		    		sv.start();
 					WS_Server_List.put(portArray[i],sv);
-					EventSender.sendLog("Open websocket server, listen on port : " + portArray[i]);
 				}
 			}
 		}else {
 			BGVConfig.bgvConf.setConf("Listen", ",");
 		}
+		
+		//TODO 啟動Switch
 	}
 	
 }
