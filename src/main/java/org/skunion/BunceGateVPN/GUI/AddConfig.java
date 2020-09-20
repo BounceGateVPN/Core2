@@ -25,7 +25,7 @@ public class AddConfig extends JDialog {
 	
 	private final JPanel contentPanel = new JPanel();
 	private JDialog jd = this;
-	private JTextField switchName;
+	private JTextField switchName;//若為Server, switchName = cfgName
 	private JTextField hostname;
 	private JTextField portNum;
 	private JTextField userName;
@@ -75,6 +75,7 @@ public class AddConfig extends JDialog {
 			portNum.setEditable(false);
 			userName.setEditable(false);
 			passwd.setEditable(false);
+			switchName.setEditable(false);
 			
 			if(cfg.pro.getProperty("SQL").equalsIgnoreCase("TRUE"))
 				sqlCheck.setSelected(true);
@@ -100,6 +101,7 @@ public class AddConfig extends JDialog {
 			portNum.setEditable(false);
 			userName.setEditable(false);
 			passwd.setEditable(false);
+			switchName.setEditable(false);
 		}
 	}
 	
@@ -259,14 +261,14 @@ public class AddConfig extends JDialog {
 							cfg.pro.setProperty("host", sqlURL.getText());
 							cfg.pro.setProperty("user", sqlUser.getText());
 							cfg.pro.setProperty("passwd",String.valueOf(sqlPasswd.getPassword()));
-							cfg.pro.setProperty("switch", switchName.getText());
+							cfg.pro.setProperty("switch", cfgName.getText());//SwitchName = NameConf
 							cfg.saveConf();
 							
-							if(WS_Server.switchLs.containsKey(switchName.getText())) {
-								Pair<Config,VirtualSwitch> cfgVs = WS_Server.switchLs.get(switchName.getText());
+							if(WS_Server.switchLs.containsKey(cfgName.getText())) {
+								Pair<Config,VirtualSwitch> cfgVs = WS_Server.switchLs.get(cfgName.getText());
 								cfg.setConf(cfgName.getText(), t);
 								cfgVs.first = cfg;
-								WS_Server.switchLs.remove(switchName.getText());
+								WS_Server.switchLs.remove(cfgName.getText());
 								WS_Server.switchLs.put(cfg.switchName, cfgVs);
 							}else {
 								Pair<Config,VirtualSwitch> cfgVs = new Pair<Config,VirtualSwitch>();
