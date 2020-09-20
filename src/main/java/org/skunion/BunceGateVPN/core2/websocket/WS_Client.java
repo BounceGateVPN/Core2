@@ -12,9 +12,6 @@ import java.util.Base64;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import org.skunion.BunceGateVPN.core2.Main;
-
-import com.github.smallru8.BounceGateVPN.Router.RouterPort;
-import com.github.smallru8.BounceGateVPN.Switch.SwitchPort;
 import com.github.smallru8.Secure2.DH.DHSender;
 import com.github.smallru8.Secure2.Data.UsrData;
 import com.github.smallru8.Secure2.config.Config;
@@ -141,7 +138,7 @@ public class WS_Client extends WebSocketClient{
 			//DH完成,送帳號密碼 密碼不能有空白建!!!
 			
 			//System.out.println(ud.destSwitchName+" "+ud.name+" "+ud.passwd);
-			//send(ud.destSwitchName+" "+ud.name+" "+ud.passwd);//<switchname> <username> <passwd>
+			//send(ud.destSwitchName+" "+ud.name+" "+ud.passwd);//<switchname>\n<username>\n<passwd>
 			try {
 				String usrData = encoder.encodeToString(ud.dh.encrypt((ud.destSwitchName+"\n"+ud.name+"\n"+ud.passwd).getBytes("UTF-8")));
 				System.out.println(usrData);
@@ -184,12 +181,16 @@ public class WS_Client extends WebSocketClient{
 	public void onClose(int code, String reason, boolean remote) {
 		// TODO Auto-generated method stub
 		EventSender.sendLog("Close websocket connection. " + reason);
+		close();
+		/*
 		if(sport.type.equals(Port.DeviceType.virtualSwitch)) {
 			((SwitchPort)sport).vs.delDevice(this.hashCode());
 		}else if(sport.type.equals(Port.DeviceType.virtualRouter)) {
 			((RouterPort)sport).vr.delDevice(this.hashCode());
+		}else {
+			
 		}
-		
+		*/
 	}
 
 	@Override

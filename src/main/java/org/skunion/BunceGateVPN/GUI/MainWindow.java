@@ -12,6 +12,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.skunion.BunceGateVPN.core2.BGVConfig;
 import org.skunion.BunceGateVPN.core2.Main;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Client;
+import org.skunion.BunceGateVPN.core2.websocket.WS_Server;
 
 import com.github.smallru8.Secure2.config.Config;
 import com.github.smallru8.util.log.Event.LogEvent;
@@ -43,8 +44,6 @@ public class MainWindow extends JFrame {
 	private JTextField textField;
 	private JList<String> list;//client
 	private JList<String> list_1;//server
-	private JButton editClientCfg;
-	private JButton editServerCfg;
 	private JCheckBoxMenuItem chckbxmntmNewCheckItem;
 	
 	private String path0 = "config/client/";
@@ -194,11 +193,12 @@ public class MainWindow extends JFrame {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				int index = list.locationToIndex(e.getPoint());
-				if (SwingUtilities.isRightMouseButton(e)&&index!=-1) {
+				if (SwingUtilities.isRightMouseButton(e)&&index!=-1) {//client右鍵選單
 					list.setSelectedIndex(index);
-					editClientCfg.setEnabled(true);
 	                JPopupMenu menu = new JPopupMenu();
 	                JMenuItem item;
+	                JMenuItem item2;//Edit
+	                JMenuItem item3;//Delete conf
 	                String nameConf = (String) list.getSelectedValue();
 	                if(Main.WS_Client_List.containsKey(nameConf)) {
 	                	item = new JMenuItem("Disconnect");
@@ -212,6 +212,7 @@ public class MainWindow extends JFrame {
 	                			Main.WS_Client_List.remove((String) list.getSelectedValue());
 	                		}
 	                	});
+	                	menu.add(item);
 	                }else {//連線
 	                	item = new JMenuItem("Connect");
 	                	item.addMouseListener(new MouseAdapter() {
@@ -231,15 +232,38 @@ public class MainWindow extends JFrame {
 								}
 	                		}
 	                	});
+	                	item2 = new JMenuItem("Edit");
+	                	item2.addMouseListener(new MouseAdapter() {
+	                		@Override
+	            			public void mousePressed(MouseEvent e) {
+	                			String str = ((String) list.getSelectedValue()).split("\\.")[0];
+	            				Config cfgTmp = new Config();
+	            				cfgTmp.setConf(str, Config.ConfType.CLIENT);
+	            				
+	            				AddConfig aConf = new AddConfig(cfgTmp,Config.ConfType.CLIENT);
+	            				aConf.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+	            				aConf.setVisible(true);
+	                		}
+	                	});
+	                	
+	                	item3 = new JMenuItem("Delete");
+		                item3.addMouseListener(new MouseAdapter() {
+	                		@Override
+	            			public void mousePressed(MouseEvent e) {
+	                			new File(path0 + (String) list.getSelectedValue()).delete();
+	                			list.remove(list.getSelectedIndex());	                			
+	                		}
+	                	});
+		                
+		                menu.add(item);
+		                menu.add(item2);
+		                menu.add(item3);
 	                }
 	                
-	                menu.add(item);
+	                
+	                
 	                menu.show(list, e.getPoint().x, e.getPoint().y);
-	            }else if(!list.isSelectionEmpty()) {
-					editClientCfg.setEnabled(true);
-				}else {
-					editClientCfg.setEnabled(false);
-				}
+	            }
 			}
 			@Override
 			public void mouseClicked(MouseEvent e) {//Double click to connect
@@ -265,24 +289,8 @@ public class MainWindow extends JFrame {
 		        }
 			}
 		});
-		list.setBounds(10, 10, 219, 108);
+		list.setBounds(10, 10, 287, 108);
 		panel_1.add(list);
-		
-		editClientCfg = new JButton("Edit");
-		editClientCfg.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {//編輯 client config
-				String str = ((String) list.getSelectedValue()).split("\\.")[0];
-				Config cfgTmp = new Config();
-				cfgTmp.setConf(str, Config.ConfType.CLIENT);
-				
-				AddConfig aConf = new AddConfig(cfgTmp,Config.ConfType.CLIENT);
-				aConf.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-				aConf.setVisible(true);
-			}
-		});
-		editClientCfg.setBounds(239, 10, 58, 23);
-		panel_1.add(editClientCfg);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -294,31 +302,52 @@ public class MainWindow extends JFrame {
 		list_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				if(!list_1.isSelectionEmpty()) {
-					editServerCfg.setEnabled(true);
-				}else {
-					editServerCfg.setEnabled(false);
+				int index = list_1.locationToIndex(e.getPoint());
+				if (SwingUtilities.isRightMouseButton(e)&&index!=-1) {//vSwitch右鍵選單
+					list_1.setSelectedIndex(index);
+	                JPopupMenu menu = new JPopupMenu();
+	                JMenuItem item;//Edit
+	                JMenuItem item2;//Delete
+	                String nameConf = (String) list_1.getSelectedValue();
+	                
+	                item = new JMenuItem("Edit");
+                	item.addMouseListener(new MouseAdapter() {
+                		@Override
+            			public void mousePressed(MouseEvent e) {//Edit
+                			String str = ((String) list_1.getSelectedValue()).split("\\.")[0];
+            				Config cfgTmp = new Config();
+            				cfgTmp.setConf(str, Config.ConfType.SERVER);
+            				
+            				AddConfig aConf = new AddConfig(cfgTmp,Config.ConfType.SERVER);
+            				aConf.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            				aConf.setVisible(true);
+            				aConf.cfgName.setEditable(false);
+                		}
+                	});
+                	item2 = new JMenuItem("Delete");
+                	item2.addMouseListener(new MouseAdapter() {
+                		@Override
+            			public void mousePressed(MouseEvent e) {//Delete
+                			String str = ((String) list_1.getSelectedValue()).split("\\.")[0];
+            				Config cfgTmp = new Config();
+            				cfgTmp.setConf(str, Config.ConfType.SERVER);
+            				
+            				WS_Server.switchLs.get(cfgTmp.switchName).second.stop();
+            				WS_Server.switchLs.remove(cfgTmp.switchName);
+            				
+            				new File(path1 + (String) list_1.getSelectedValue()).delete();
+                			list_1.remove(list_1.getSelectedIndex());
+                		}
+                	});
+                	menu.add(item);
+                	menu.add(item2);
+	                
+	                menu.show(list_1, e.getPoint().x, e.getPoint().y);
 				}
-			}
+			}  
 		});
-		list_1.setBounds(10, 10, 219, 108);
+		list_1.setBounds(10, 10, 287, 108);
 		panel_2.add(list_1);
-		
-		editServerCfg = new JButton("Edit");
-		editServerCfg.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {//編輯 vSwitch config
-				String str = ((String) list_1.getSelectedValue()).split("\\.")[0];
-				Config cfgTmp = new Config();
-				cfgTmp.setConf(str, Config.ConfType.SERVER);
-				
-				AddConfig aConf = new AddConfig(cfgTmp,Config.ConfType.SERVER);
-				aConf.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-				aConf.setVisible(true);
-			}
-		});
-		editServerCfg.setBounds(239, 10, 58, 23);
-		panel_2.add(editServerCfg);
 		
 		textField = new JTextField();
 		textField.setBounds(363, 329, 251, 21);
@@ -339,9 +368,7 @@ public class MainWindow extends JFrame {
 		
 		if(BGVConfig.bgvConf.getConf("Tap")!=null&&BGVConfig.bgvConf.getConf("Tap").equalsIgnoreCase("true"))
 			chckbxmntmNewCheckItem.setSelected(true);
-		
-		editClientCfg.setEnabled(false);
-		editServerCfg.setEnabled(false);
+
 		refreshJList();
 	}
 	

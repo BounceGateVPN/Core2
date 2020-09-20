@@ -8,7 +8,11 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.skunion.BunceGateVPN.core2.websocket.WS_Server;
+
+import com.github.smallru8.BounceGateVPN.Switch.VirtualSwitch;
 import com.github.smallru8.Secure2.config.Config;
+import com.github.smallru8.util.Pair;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -33,7 +37,7 @@ public class AddConfig extends JDialog {
 	private Config cfg;
 	
 	private Config.ConfType t;
-	private JTextField cfgName;
+	public JTextField cfgName;
 	private JPasswordField sqlPasswd;
 	
 	/*
@@ -257,6 +261,21 @@ public class AddConfig extends JDialog {
 							cfg.pro.setProperty("passwd",String.valueOf(sqlPasswd.getPassword()));
 							cfg.pro.setProperty("switch", switchName.getText());
 							cfg.saveConf();
+							
+							if(WS_Server.switchLs.containsKey(switchName.getText())) {
+								Pair<Config,VirtualSwitch> cfgVs = WS_Server.switchLs.get(switchName.getText());
+								cfg.setConf(cfgName.getText(), t);
+								cfgVs.first = cfg;
+								WS_Server.switchLs.remove(switchName.getText());
+								WS_Server.switchLs.put(cfg.switchName, cfgVs);
+							}else {
+								Pair<Config,VirtualSwitch> cfgVs = new Pair<Config,VirtualSwitch>();
+								cfg.setConf(cfgName.getText(), t);
+								cfgVs.makePair(cfg, new VirtualSwitch());
+								cfgVs.second.start();
+								WS_Server.switchLs.put(cfg.switchName, cfgVs);
+							}
+							
 						}
 					}
 				});

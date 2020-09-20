@@ -1,6 +1,7 @@
 package org.skunion.BunceGateVPN.core2;
 
 import java.awt.EventQueue;
+import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URISyntaxException;
@@ -12,7 +13,9 @@ import org.skunion.BunceGateVPN.GUI.MainWindow;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Client;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Server;
 import com.github.smallru8.BounceGateVPN.Switch.VirtualSwitch;
+import com.github.smallru8.Secure2.config.Config;
 import com.github.smallru8.driver.tuntap.TapDevice;
+import com.github.smallru8.util.Pair;
 import com.github.smallru8.util.log.EventSender;
 
 public class Main {
@@ -109,7 +112,19 @@ public class Main {
 			BGVConfig.bgvConf.setConf("Listen", ",");
 		}
 		
-		//TODO 啟動Switch
+		/**
+		 * 啟動vSwitch
+		 */
+		File f = new File("config/server/");
+		String[] serverCfgLs = f.list();
+		for(int i=0;i<serverCfgLs.length;i++) {
+			Config cfg = new Config();
+			cfg.setConf(serverCfgLs[i].split("\\.")[0], Config.ConfType.SERVER);
+			Pair<Config,VirtualSwitch> cfgSv = new Pair<Config,VirtualSwitch>();
+			cfgSv.makePair(cfg, new VirtualSwitch());
+			cfgSv.second.start();
+			WS_Server.switchLs.put(cfg.switchName,cfgSv);
+		}
 	}
 	
 }
