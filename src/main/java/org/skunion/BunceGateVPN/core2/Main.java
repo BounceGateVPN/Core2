@@ -28,7 +28,6 @@ public class Main {
 	
 	public static void main( String[] args ) throws SQLException, URISyntaxException, IOException
     {
-		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -124,6 +123,7 @@ public class Main {
 			cfgSv.makePair(cfg, new VirtualSwitch());
 			cfgSv.second.start();
 			WS_Server.switchLs.put(cfg.switchName,cfgSv);
+			EventSender.sendLog("VirtualSwitch : " + cfg.switchName + " start.");
 		}
 	}
 	

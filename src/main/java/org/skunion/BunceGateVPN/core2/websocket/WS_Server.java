@@ -103,7 +103,7 @@ public class WS_Server extends WebSocketServer{
 			String str;
 			try {
 				str = new String(wsp.ud.dh.decryption(decoder.decode(message)),"UTF-8");
-				EventSender.sendLog("Test : "+str);
+				EventSender.sendLog(wsp.ud.name+" : "+str);
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

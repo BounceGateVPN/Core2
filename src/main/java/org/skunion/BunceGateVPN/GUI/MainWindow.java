@@ -358,12 +358,12 @@ public class MainWindow extends JFrame {
 		lblNewLabel.setBounds(328, 329, 36, 21);
 		contentPane.add(lblNewLabel);
 		
-		JLabel lblClient = new JLabel("Client");
-		lblClient.setBounds(318, 10, 46, 21);
+		JLabel lblClient = new JLabel("Websocket client");
+		lblClient.setBounds(318, 10, 135, 21);
 		contentPane.add(lblClient);
 		
-		JLabel lblServer = new JLabel("Server");
-		lblServer.setBounds(318, 168, 46, 21);
+		JLabel lblServer = new JLabel("VirtualSwitch");
+		lblServer.setBounds(318, 168, 135, 21);
 		contentPane.add(lblServer);
 		
 		if(BGVConfig.bgvConf.getConf("Tap")!=null&&BGVConfig.bgvConf.getConf("Tap").equalsIgnoreCase("true"))
