@@ -70,7 +70,7 @@ public class MainWindow extends JFrame {
 		setResizable(false);
 		EventBus.getDefault().register(this);
 		setTitle("BunceGateVPN");
-		setBounds(100, 100, 651, 422);
+		setBounds(100, 100, 651, 512);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -359,6 +359,10 @@ public class MainWindow extends JFrame {
 		//scrollPane.setLayout(null);
 		scrollPane.setBounds(10, 10, 298, 340);
 		contentPane.add(scrollPane);
+		
+		JLabel lblNewLabel_1 = new JLabel("這裡會放JTable");
+		lblNewLabel_1.setBounds(215, 406, 207, 15);
+		contentPane.add(lblNewLabel_1);
 		
 		if(BGVConfig.bgvConf.getConf("Tap")!=null&&BGVConfig.bgvConf.getConf("Tap").equalsIgnoreCase("true"))
 			chckbxmntmNewCheckItem.setSelected(true);

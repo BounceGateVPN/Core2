@@ -20,6 +20,7 @@ import com.github.smallru8.BounceGateVPN.Switch.VirtualSwitch;
 import com.github.smallru8.Secure2.config.Config;
 import com.github.smallru8.driver.tuntap.TapDevice;
 import com.github.smallru8.util.Pair;
+import com.github.smallru8.util.log.Event;
 import com.github.smallru8.util.log.EventSender;
 
 public class Main {
@@ -35,7 +36,7 @@ public class Main {
 		try {
 		    UIManager.setLookAndFeel(new FlatDarkLaf());
 		} catch( Exception ex ) {
-		    System.err.println( "Failed to initialize LaF" );
+		    EventSender.sendLog(Event.LogEvent.Type.ERROR,"Failed to initialize LaF.");
 		}
 		
 		EventQueue.invokeLater(new Runnable() {
