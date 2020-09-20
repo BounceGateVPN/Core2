@@ -5,7 +5,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.border.EmptyBorder;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -13,11 +12,9 @@ import org.skunion.BunceGateVPN.core2.BGVConfig;
 import org.skunion.BunceGateVPN.core2.Main;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Client;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Server;
-
 import com.github.smallru8.Secure2.config.Config;
 import com.github.smallru8.util.log.Event.LogEvent;
 import com.github.smallru8.util.log.EventSender;
-
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -31,21 +28,19 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-
-import javax.swing.JButton;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JScrollPane;
 
 public class MainWindow extends JFrame {
 
 	private JPanel contentPane;
-	private JTextArea textArea;
 	private JTextField textField;
 	private JList<String> list;//client
 	private JList<String> list_1;//server
 	private JCheckBoxMenuItem chckbxmntmNewCheckItem;
-	
+	private JTextArea textArea;
 	private String path0 = "config/client/";
 	private String path1 = "config/server/";
 	
@@ -71,9 +66,10 @@ public class MainWindow extends JFrame {
 	 * Create the frame.
 	 */
 	public MainWindow() {
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setResizable(false);
 		EventBus.getDefault().register(this);
 		setTitle("BunceGateVPN");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 651, 422);
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -169,18 +165,6 @@ public class MainWindow extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
-		JPanel panel = new JPanel();
-		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel.setBounds(10, 10, 298, 340);
-		contentPane.add(panel);
-		panel.setLayout(null);
-		
-		//console output
-		textArea = new JTextArea();
-		textArea.setEditable(false);
-		textArea.setBounds(10, 10, 278, 320);
-		panel.add(textArea);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
@@ -358,13 +342,23 @@ public class MainWindow extends JFrame {
 		lblNewLabel.setBounds(328, 329, 36, 21);
 		contentPane.add(lblNewLabel);
 		
-		JLabel lblClient = new JLabel("Websocket client");
-		lblClient.setBounds(318, 10, 135, 21);
+		JLabel lblClient = new JLabel("Client");
+		lblClient.setBounds(318, 10, 46, 21);
 		contentPane.add(lblClient);
 		
 		JLabel lblServer = new JLabel("VirtualSwitch");
 		lblServer.setBounds(318, 168, 135, 21);
 		contentPane.add(lblServer);
+				
+		textArea = new JTextArea();
+		textArea.setRows(16);
+		textArea.setColumns(42);
+		textArea.setEditable(false);
+		
+		JScrollPane scrollPane = new JScrollPane(textArea);
+		//scrollPane.setLayout(null);
+		scrollPane.setBounds(10, 10, 298, 340);
+		contentPane.add(scrollPane);
 		
 		if(BGVConfig.bgvConf.getConf("Tap")!=null&&BGVConfig.bgvConf.getConf("Tap").equalsIgnoreCase("true"))
 			chckbxmntmNewCheckItem.setSelected(true);

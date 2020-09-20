@@ -9,9 +9,13 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.UIManager;
+
 import org.skunion.BunceGateVPN.GUI.MainWindow;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Client;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Server;
+
+import com.formdev.flatlaf.FlatDarkLaf;
 import com.github.smallru8.BounceGateVPN.Switch.VirtualSwitch;
 import com.github.smallru8.Secure2.config.Config;
 import com.github.smallru8.driver.tuntap.TapDevice;
@@ -28,6 +32,12 @@ public class Main {
 	
 	public static void main( String[] args ) throws SQLException, URISyntaxException, IOException
     {
+		try {
+		    UIManager.setLookAndFeel(new FlatDarkLaf());
+		} catch( Exception ex ) {
+		    System.err.println( "Failed to initialize LaF" );
+		}
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
