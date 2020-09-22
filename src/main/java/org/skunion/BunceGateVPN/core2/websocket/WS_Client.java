@@ -71,9 +71,10 @@ public class WS_Client extends WebSocketClient{
 				EventSender.sendLog("Start sending public key to server.");
 				//System.out.println("Client pubk : "+encoder.encodeToString(ud.dh.getPublicKey()));///////////
 				this.send(encoder.encodeToString(ud.dh.getPublicKey()));//送出publickey, 以UTF-8編碼
-			}else
+			}else {
 				EventSender.sendLog(Event.LogEvent.Type.ERROR,"Can't connect to " + ud.destSwitchName + "@" + ud.IPaddr + ":" + ud.port);
 				close();
+			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

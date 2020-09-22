@@ -49,9 +49,9 @@ public class WS_Server extends WebSocketServer{
 	@Override
 	public void onClose(WebSocket conn, int code, String reason, boolean remote) {
 		// TODO Auto-generated method stub
-		String ip = conn.getRemoteSocketAddress().getAddress().getHostAddress();
+		//String ip = conn.getRemoteSocketAddress().getAddress().getHostAddress();
 		WSRecord.remove(conn);
-		EventSender.sendLog("IP : "+ip+" disconnected. Due to "+reason);
+		EventSender.sendLog("Disconnected. Due to "+reason);
 	}
 
 	@Override
