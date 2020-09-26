@@ -28,8 +28,6 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import javax.swing.border.LineBorder;
-import java.awt.Color;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JScrollPane;
 
@@ -70,7 +68,7 @@ public class MainWindow extends JFrame {
 		setResizable(false);
 		EventBus.getDefault().register(this);
 		setTitle("BunceGateVPN");
-		setBounds(100, 100, 651, 512);
+		setBounds(100, 100, 651, 416);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -166,12 +164,9 @@ public class MainWindow extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel_1.setBounds(318, 30, 307, 128);
-		contentPane.add(panel_1);
-		panel_1.setLayout(null);
-		
+		/**
+		 * Client list
+		 */
 		list = new JList<String>();
 		list.addMouseListener(new MouseAdapter() {
 			@Override
@@ -273,15 +268,14 @@ public class MainWindow extends JFrame {
 		        }
 			}
 		});
-		list.setBounds(10, 10, 287, 108);
-		panel_1.add(list);
 		
-		JPanel panel_2 = new JPanel();
-		panel_2.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel_2.setBounds(318, 188, 307, 128);
-		contentPane.add(panel_2);
-		panel_2.setLayout(null);
+		JScrollPane scrollPane_cli = new JScrollPane(list);
+		scrollPane_cli.setBounds(318, 30, 307, 128);
+		contentPane.add(scrollPane_cli);
 		
+		/**
+		 * vSwitch list
+		 */
 		list_1 = new JList<String>();
 		list_1.addMouseListener(new MouseAdapter() {
 			@Override
@@ -330,8 +324,10 @@ public class MainWindow extends JFrame {
 				}
 			}  
 		});
-		list_1.setBounds(10, 10, 287, 108);
-		panel_2.add(list_1);
+		
+		JScrollPane scrollPane_ser = new JScrollPane(list_1);
+		scrollPane_ser.setBounds(318, 188, 307, 128);
+		contentPane.add(scrollPane_ser);
 		
 		textField = new JTextField();
 		textField.setBounds(363, 329, 251, 21);
@@ -356,13 +352,8 @@ public class MainWindow extends JFrame {
 		textArea.setEditable(false);
 		
 		JScrollPane scrollPane = new JScrollPane(textArea);
-		//scrollPane.setLayout(null);
 		scrollPane.setBounds(10, 10, 298, 340);
 		contentPane.add(scrollPane);
-		
-		JLabel lblNewLabel_1 = new JLabel("這裡會放JTable");
-		lblNewLabel_1.setBounds(215, 406, 207, 15);
-		contentPane.add(lblNewLabel_1);
 		
 		if(BGVConfig.bgvConf.getConf("Tap")!=null&&BGVConfig.bgvConf.getConf("Tap").equalsIgnoreCase("true"))
 			chckbxmntmNewCheckItem.setSelected(true);
@@ -396,4 +387,5 @@ public class MainWindow extends JFrame {
 	public void onConsoleOutput(LogEvent le) {
 		textArea.append(le.text+"\n");
 	}
+	
 }

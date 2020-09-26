@@ -114,8 +114,8 @@ public class WS_Client extends WebSocketClient{
 	@Override
 	public void send(ByteBuffer bytes) {
 		if(readyFlag) {
-			EventSender.sendLog("send : "+bytes.array().length);/////////////////////Debug
 			super.send(ud.dh.encrypt(bytes.array()));
+			EventSender.sendLog("send : "+bytes.array().length);/////////////////////Debug
 		}
 	}
 	
