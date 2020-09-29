@@ -286,6 +286,7 @@ public class MainWindow extends JFrame {
 	                JPopupMenu menu = new JPopupMenu();
 	                JMenuItem item;//Edit
 	                JMenuItem item2;//Delete
+	                JMenuItem item3;//setting
 	                String nameConf = (String) list_1.getSelectedValue();
 	                
 	                item = new JMenuItem("Edit");
@@ -317,8 +318,18 @@ public class MainWindow extends JFrame {
                 			list_1.remove(list_1.getSelectedIndex());
                 		}
                 	});
+                	
+                	item3 = new JMenuItem("Setting");//開啟詳細設定視窗
+                	item3.addMouseListener(new MouseAdapter() {
+                		@Override
+            			public void mousePressed(MouseEvent e) {
+                			
+                		}
+                	});
+                	
                 	menu.add(item);
                 	menu.add(item2);
+                	menu.add(item3);
 	                
 	                menu.show(list_1, e.getPoint().x, e.getPoint().y);
 				}
@@ -359,6 +370,7 @@ public class MainWindow extends JFrame {
 			chckbxmntmNewCheckItem.setSelected(true);
 
 		refreshJList();
+		setIconImage(Main.icon.getImage());
 	}
 	
 	public void refreshJList() {
@@ -383,9 +395,19 @@ public class MainWindow extends JFrame {
 		list_1.setListData(serverCfgLs);
 	}
 	
+	/**
+	 * clientName.conf
+	 * @return
+	 */
+	public String getSelClient() {
+		String ret = null;
+		if(!list.isSelectionEmpty())
+			ret = (String) list.getSelectedValue();
+		return ret;
+	}
+	
 	@Subscribe(threadMode = ThreadMode.MAIN)
 	public void onConsoleOutput(LogEvent le) {
 		textArea.append(le.text+"\n");
 	}
-	
 }

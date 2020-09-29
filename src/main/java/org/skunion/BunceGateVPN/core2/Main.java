@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 
 import org.skunion.BunceGateVPN.GUI.MainWindow;
@@ -25,8 +26,16 @@ import com.github.smallru8.util.log.EventSender;
 
 public class Main {
 	
+	public static ImageIcon icon;
+	public static MainWindow mainframe;
+	
 	public static TapDevice td = new TapDevice();
 	public static VirtualSwitch localVS = new LocalhostVirtualSwitch();
+	
+	/**
+	 * 給vSwitch用
+	 */
+	public static Map<String,WS_Client> L2Linker = new HashMap<String,WS_Client>();//configName.conf,WS_Client
 	
 	public static Map<String,WS_Client> WS_Client_List = new HashMap<String,WS_Client>();//configName.conf,WS_Client
 	public static Map<String,WS_Server> WS_Server_List = new HashMap<String,WS_Server>();//Listen port number,WS_Server
@@ -39,11 +48,14 @@ public class Main {
 		    EventSender.sendLog(Event.LogEvent.Type.ERROR,"Failed to initialize LaF.");
 		}
 		
+		icon = new ImageIcon(Main.class.getClassLoader().getResource("Logo.png"));
+		//icon = new ImageIcon("F:\\git\\BounceGateVPN\\core2\\src\\main\\resources\\bgv.ico");
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainWindow frame = new MainWindow();
-					frame.setVisible(true);
+					mainframe = new MainWindow();
+					mainframe.setVisible(true);
 					onBGVStart();
 				} catch (Exception e) {
 					e.printStackTrace();

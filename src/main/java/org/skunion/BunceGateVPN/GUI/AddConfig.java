@@ -8,6 +8,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import org.skunion.BunceGateVPN.core2.Main;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Server;
 
 import com.github.smallru8.BounceGateVPN.Switch.VirtualSwitch;
@@ -86,7 +87,7 @@ public class AddConfig extends JDialog {
 			sqlPasswd.setText(cfg.pro.getProperty("passwd"));
 			switchName.setText(cfg.pro.getProperty("switch"));
 		}
-		
+		setIconImage(Main.icon.getImage());
 	}
 	
 	public AddConfig(Config.ConfType t) {
@@ -279,6 +280,7 @@ public class AddConfig extends JDialog {
 							}
 							
 						}
+						jd.dispose();
 					}
 				});
 				okButton.setActionCommand("OK");
@@ -297,5 +299,6 @@ public class AddConfig extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
+		setIconImage(Main.icon.getImage());
 	}
 }
