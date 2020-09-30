@@ -32,6 +32,8 @@ public class WS_Client extends WebSocketClient{
 	public final Base64.Decoder decoder = Base64.getDecoder();
 	public final Base64.Encoder encoder = Base64.getEncoder();
 	
+	public boolean autoReconnect = false;
+	
 	public boolean readyFlag;
 	public UsrData ud;
 	public Port sport; //Switch port
@@ -185,6 +187,13 @@ public class WS_Client extends WebSocketClient{
 		// TODO Auto-generated method stub
 		EventSender.sendLog("Close websocket connection. " + reason);
 		close();
+		if(autoReconnect) {//auto reconnect
+			EventSender.sendLog("Reconnect websocket connection.");
+			readyFlag = false;
+			ud.readyFlag = false;
+			connect();
+		}
+		
 		/*
 		if(sport.type.equals(Port.DeviceType.virtualSwitch)) {
 			((SwitchPort)sport).vs.delDevice(this.hashCode());

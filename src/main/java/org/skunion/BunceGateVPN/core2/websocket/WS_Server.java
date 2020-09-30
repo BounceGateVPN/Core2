@@ -16,6 +16,7 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
+import com.github.smallru8.BounceGateVPN.Switch.SwitchPort;
 import com.github.smallru8.BounceGateVPN.Switch.VirtualSwitch;
 import com.github.smallru8.Secure2.Secure2;
 import com.github.smallru8.Secure2.Data.UsrData;
@@ -50,7 +51,9 @@ public class WS_Server extends WebSocketServer{
 	public void onClose(WebSocket conn, int code, String reason, boolean remote) {
 		// TODO Auto-generated method stub
 		//String ip = conn.getRemoteSocketAddress().getAddress().getHostAddress();
+		((SwitchPort)WSRecord.get(conn).sport).vs.delDevice(WSRecord.get(conn).hashCode());
 		WSRecord.remove(conn);
+		
 		EventSender.sendLog("Disconnected. Due to "+reason);
 	}
 
@@ -88,8 +91,10 @@ public class WS_Server extends WebSocketServer{
 					if(!verifyUser(wsp)) {//未通過則執行
 						WSRecord.remove(conn);
 						conn.close();
+					}else {
+						//驗證通過
+						wsp.setPort(switchLs.get(wsp.ud.destSwitchName).second.addDevice(wsp));//set port
 					}
-					
 				}else {//資料有問題,關閉連線
 					WSRecord.remove(conn);
 					conn.close();
