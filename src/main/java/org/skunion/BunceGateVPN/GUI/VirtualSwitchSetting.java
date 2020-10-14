@@ -10,6 +10,8 @@ import javax.swing.border.EmptyBorder;
 
 import org.skunion.BunceGateVPN.core2.BGVConfig;
 import org.skunion.BunceGateVPN.core2.Main;
+import org.skunion.BunceGateVPN.core2.websocket.WS_Client;
+import org.skunion.BunceGateVPN.core2.websocket.WS_Package;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Server;
 
 import com.github.smallru8.BounceGateVPN.Switch.SwitchPort;
@@ -98,8 +100,17 @@ public class VirtualSwitchSetting extends JFrame {
 	                	Map.Entry mapEntry = (Map.Entry) iterator.next();
 	                	
 	                	//為WS且與選中名稱相同
-	                	if(((SwitchPort)mapEntry.getValue()).type.equals(Port.DeviceType.WS)&&((SwitchPort)mapEntry.getValue()).ws) {
+	                	if(((SwitchPort)mapEntry.getValue()).type.equals(Port.DeviceType.WS)) {
 	                		//TODO ClassCastException
+	                		try {
+	                			WS_Client wsc = (WS_Client)((SwitchPort)mapEntry.getValue()).ws;//本機主動連出去的WS
+	                			
+	                			
+	                			
+	                		}catch (ClassCastException cce) {
+	                			continue;//發生exception表示不是目標
+	                		}
+	                		
 	                		mapEntry.getValue();
 	                	}
 	                }
