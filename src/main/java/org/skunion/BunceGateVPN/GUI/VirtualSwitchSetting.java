@@ -96,23 +96,35 @@ public class VirtualSwitchSetting extends JFrame {
 	                
 	                //看WS_Client是否已存在在vSwitch(已連線)
 	                Iterator iterator = WS_Server.switchLs.get(cfg.pro.getProperty("switch")).second.port.entrySet().iterator();
+	                boolean connectionStart = false;
 	                while (iterator.hasNext()) {
 	                	Map.Entry mapEntry = (Map.Entry) iterator.next();
 	                	
-	                	//為WS且與選中名稱相同
+	                	//為WS
 	                	if(((SwitchPort)mapEntry.getValue()).type.equals(Port.DeviceType.WS)) {
-	                		//TODO ClassCastException
 	                		try {
 	                			WS_Client wsc = (WS_Client)((SwitchPort)mapEntry.getValue()).ws;//本機主動連出去的WS
-	                			
+	                			//與選中名稱相同,split是去掉.conf
+	                			if(wsc.ud.sessionName.equalsIgnoreCase(((String)list.getSelectedValue()).split("\\.")[0])) {
+	                				//這個連線有啟用
+	                				connectionStart = true;
+	                				//TODO:新增彈出式菜單物件 : Disconnect
+	                				
+	                			}else {
+	                				continue;
+	                			}
 	                			
 	                			
 	                		}catch (ClassCastException cce) {
 	                			continue;//發生exception表示不是目標
 	                		}
-	                		
-	                		mapEntry.getValue();
 	                	}
+	                }
+	                
+	                if(!connectionStart) {//連線未啟動
+	                	
+	                	//TODO:新增彈出式菜單物件 : Connect
+	                	
 	                }
 	                
 	                /*
