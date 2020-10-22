@@ -4,6 +4,7 @@ import com.github.smallru8.BounceGateVPN.Switch.SwitchPort;
 import com.github.smallru8.BounceGateVPN.Switch.VirtualSwitch;
 import com.github.smallru8.driver.tuntap.TapDevice;
 import com.github.smallru8.util.abstracts.Port;
+import com.github.smallru8.util.log.EventSender;
 
 /**
  * 
@@ -57,6 +58,7 @@ public class LocalhostVirtualSwitch extends VirtualSwitch{
 					if(switchTable.searchSrcPortHashCode(buffer)==td_Hashcode) {//由本地用戶送出(tap)
 						sendDataToDevice(switchTable.searchDesPortHashCode(buffer),buffer);//往外送(WS)
 					}else{//外部輸入到本地
+						
 						sendDataToDevice(td_Hashcode,buffer);//一律往tap送
 					}
 				}

@@ -18,6 +18,7 @@ import org.skunion.BunceGateVPN.core2.websocket.WS_Server;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.github.smallru8.BounceGateVPN.Switch.VirtualSwitch;
+import com.github.smallru8.BounceGateVPN.bridge.Bridge;
 import com.github.smallru8.Secure2.config.Config;
 import com.github.smallru8.driver.tuntap.TapDevice;
 import com.github.smallru8.util.Pair;
@@ -31,6 +32,7 @@ public class Main {
 	
 	public static TapDevice td = new TapDevice();
 	public static VirtualSwitch localVS = new LocalhostVirtualSwitch();
+	private static Bridge bridge;
 	
 	/**
 	 * 給vSwitch用
@@ -139,6 +141,7 @@ public class Main {
 		 */
 		File f = new File("config/server/");
 		String[] serverCfgLs = f.list();
+		
 		for(int i=0;i<serverCfgLs.length;i++) {
 			Config cfg = new Config();
 			cfg.setConf(serverCfgLs[i].split("\\.")[0], Config.ConfType.SERVER);
@@ -146,6 +149,7 @@ public class Main {
 			cfgSv.makePair(cfg, new VirtualSwitch());
 			cfgSv.second.start();
 			WS_Server.switchLs.put(cfg.switchName,cfgSv);
+			bridge = new Bridge(cfgSv.second, localVS);
 			EventSender.sendLog("VirtualSwitch : " + cfg.switchName + " start.");
 		}
 	}
