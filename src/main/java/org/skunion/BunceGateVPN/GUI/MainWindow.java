@@ -370,7 +370,7 @@ public class MainWindow extends JFrame {
 			chckbxmntmNewCheckItem.setSelected(true);
 
 		refreshJList();
-		setIconImage(Main.icon.getImage());
+		//setIconImage(Main.icon.getImage());
 	}
 	
 	public void refreshJList() {
