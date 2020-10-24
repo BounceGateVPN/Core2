@@ -124,7 +124,9 @@ public class WS_Server extends WebSocketServer{
 		WS_Package wsp = WSRecord.get(conn);
 		if(wsp!=null&&wsp.readyFlag) {
 			EventSender.sendLog("Recv : "+message.array().length);///////////////Debug
-			wsp.sport.sendToVirtualDevice(wsp.ud.dh.decryption(message.array()));//解密 並送給switch
+			//wsp.sport.sendToVirtualDevice(wsp.ud.dh.decryption(message.array()));//解密 並送給switch
+			wsp.sport.sendToVirtualDevice(message.array());
+			
 		}
 	}
 
