@@ -122,6 +122,15 @@ public class WS_Client extends WebSocketClient{
 	}
 	
 	@Override
+	public void send(byte[] bytes) {
+		if(readyFlag) {
+			super.send(ud.dh.encrypt(bytes));
+			EventSender.sendLog("send : "+bytes.length);/////////////////////Debug
+		}
+	}
+	
+	
+	@Override
 	public void onOpen(ServerHandshake handshakedata) {
 		// TODO Auto-generated method stub
 		EventSender.sendLog("Open websocket connection.");
