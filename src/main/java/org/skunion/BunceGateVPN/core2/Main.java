@@ -50,7 +50,7 @@ public class Main {
 		    EventSender.sendLog(Event.LogEvent.Type.ERROR,"Failed to initialize LaF.");
 		}
 		
-		icon = new ImageIcon(Main.class.getClassLoader().getResource("Logo.png"));
+		//icon = new ImageIcon(Main.class.getClassLoader().getResource("Logo.png"));
 		//icon = new ImageIcon("F:\\git\\BounceGateVPN\\core2\\src\\main\\resources\\bgv.ico");
 		
 		EventQueue.invokeLater(new Runnable() {
