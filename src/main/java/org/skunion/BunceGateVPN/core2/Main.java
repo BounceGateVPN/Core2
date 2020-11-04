@@ -17,6 +17,7 @@ import org.skunion.BunceGateVPN.core2.websocket.WS_Client;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Server;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+import com.github.Mealf.BounceGateVPN.Router.VirtualRouter;
 import com.github.smallru8.BounceGateVPN.Switch.VirtualSwitch;
 import com.github.smallru8.BounceGateVPN.bridge.Bridge;
 import com.github.smallru8.Secure2.config.Config;
@@ -32,7 +33,8 @@ public class Main {
 	
 	public static TapDevice td = new TapDevice();
 	public static VirtualSwitch localVS = new LocalhostVirtualSwitch();
-	private static Bridge bridge;
+	public static VirtualRouter router;
+	private static Bridge bridge, routerBridge;
 	
 	/**
 	 * 給vSwitch用
@@ -44,6 +46,16 @@ public class Main {
 	
 	public static void main( String[] args ) throws SQLException, URISyntaxException, IOException
     {
+		Config routerConfig = new Config();
+		routerConfig.setConf("router", Config.ConfType.ROUTER);
+		router = new VirtualRouter(routerConfig);
+		Config routerInterfaceConfig = new Config();
+		routerInterfaceConfig.setConf("routerInterface", Config.ConfType.CLIENT);
+		router.addRouterInterface(routerInterfaceConfig);
+		//to 192.168.87.0/24 from Interface
+		//router.addRoutingTable(-1062709504, 24, 0, 1);
+		router.start();
+		
 		try {
 		    UIManager.setLookAndFeel(new FlatDarkLaf());
 		} catch( Exception ex ) {
@@ -150,6 +162,8 @@ public class Main {
 			cfgSv.second.start();
 			WS_Server.switchLs.put(cfg.switchName,cfgSv);
 			bridge = new Bridge(cfgSv.second, localVS);
+			routerBridge = new Bridge(cfgSv.second, router);
+			
 			EventSender.sendLog("VirtualSwitch : " + cfg.switchName + " start.");
 		}
 	}

@@ -87,7 +87,7 @@ public class AddConfig extends JDialog {
 			sqlPasswd.setText(cfg.pro.getProperty("passwd"));
 			switchName.setText(cfg.pro.getProperty("switch"));
 		}
-		setIconImage(Main.icon.getImage());
+		//setIconImage(Main.icon.getImage());
 	}
 	
 	public AddConfig(Config.ConfType t) {
@@ -299,6 +299,6 @@ public class AddConfig extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
-		setIconImage(Main.icon.getImage());
+		//setIconImage(Main.icon.getImage());
 	}
 }

@@ -156,7 +156,7 @@ public class ListenPortSetting extends JDialog {
 					model.addElement(portArray[i]);
 			}
 		}
-		setIconImage(Main.icon.getImage());
+		//setIconImage(Main.icon.getImage());
 	}
 
 }
