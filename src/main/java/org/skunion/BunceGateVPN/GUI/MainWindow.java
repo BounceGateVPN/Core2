@@ -159,6 +159,9 @@ public class MainWindow extends JFrame {
 			}
 		});
 		mnNewMenu_2.add(mntmNewMenuItem_3);
+		
+		JMenuItem setting_Router = new JMenuItem("Router");
+		mnNewMenu_2.add(setting_Router);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
