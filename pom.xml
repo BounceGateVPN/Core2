@@ -42,6 +42,11 @@
 	  <artifactId>TunTap4J</artifactId>
 	  <version>2.4</version>
 	</dependency>
+	<dependency>
+	  <groupId>com.github.smallru8</groupId>
+	  <artifactId>Switch</artifactId>
+	  <version>2.5</version>
+	</dependency>
     <dependency>
       <groupId>com.github.smallru8</groupId>
       <artifactId>util</artifactId>
