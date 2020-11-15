@@ -23,6 +23,7 @@ public class LocalhostVirtualSwitch extends VirtualSwitch{
 	
 	public LocalhostVirtualSwitch() {
 		super();
+		name = "LOCAL_SWITCH";
 	}
 	
 	@Override

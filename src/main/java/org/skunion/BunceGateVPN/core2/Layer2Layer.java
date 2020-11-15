@@ -13,6 +13,14 @@ import com.github.Mealf.BounceGateVPN.Router.VirtualRouter;
 import com.github.smallru8.BounceGateVPN.Switch.VirtualSwitch;
 import com.github.smallru8.BounceGateVPN.bridge.Bridge;
 
+/**
+ * 新增、建立Bridge
+ * 建立時自動檢查br是否已存在，建立成功自動存檔
+ * 
+ * 程式啟動時須執行loadData();
+ * @author smallru8
+ *
+ */
 public class Layer2Layer {
 
 	//記錄所有橋接器
@@ -24,33 +32,65 @@ public class Layer2Layer {
 	public Bridge br;
 	
 	public Layer2Layer(VirtualSwitch vs1,VirtualSwitch vs2) {//0
-		vswitch = new ArrayList<VirtualSwitch>();
-		vswitch.add(vs1);
-		vswitch.add(vs2);
-		createBr();
+		for(Layer2Layer e : L2L) {
+			if(e.type==0&&(e.vswitch.get(0).equals(vs1)&&e.vswitch.get(1).equals(vs2))||(e.vswitch.get(0).equals(vs2)&&e.vswitch.get(1).equals(vs1))) {
+				type = -1;//already exist
+				break;
+			}
+		}
+		if(type!=-1) {
+			vswitch = new ArrayList<VirtualSwitch>();
+			vswitch.add(vs1);
+			vswitch.add(vs2);
+			createBr();
+		}
 	}
 	public Layer2Layer(VirtualRouter vr1,VirtualRouter vr2) {//1
-		vrouter = new ArrayList<VirtualRouter>();
-		vrouter.add(vr1);
-		vrouter.add(vr2);
-		type = 1;
-		createBr();
+		for(Layer2Layer e : L2L) {
+			if(e.type==0&&(e.vrouter.get(0).equals(vr1)&&e.vrouter.get(1).equals(vr2))||(e.vrouter.get(0).equals(vr2)&&e.vrouter.get(1).equals(vr1))) {
+				type = -1;//already exist
+				break;
+			}
+		}
+		if(type!=-1) {
+			vrouter = new ArrayList<VirtualRouter>();
+			vrouter.add(vr1);
+			vrouter.add(vr2);
+			type = 1;
+			createBr();
+		}
 	}
 	public Layer2Layer(VirtualSwitch vs,VirtualRouter vr) {//2
-		vswitch = new ArrayList<VirtualSwitch>();
-		vswitch.add(vs);
-		vrouter = new ArrayList<VirtualRouter>();
-		vrouter.add(vr);
-		type = 2;
-		createBr();
+		for(Layer2Layer e : L2L) {
+			if(e.type==0&&e.vswitch.equals(vs)&&e.vrouter.equals(vr)) {
+				type = -1;//already exist
+				break;
+			}
+		}
+		if(type!=-1) {
+			vswitch = new ArrayList<VirtualSwitch>();
+			vswitch.add(vs);
+			vrouter = new ArrayList<VirtualRouter>();
+			vrouter.add(vr);
+			type = 2;
+			createBr();
+		}
 	}
 	public Layer2Layer(VirtualRouter vr,VirtualSwitch vs) {//2
-		vswitch = new ArrayList<VirtualSwitch>();
-		vswitch.add(vs);
-		vrouter = new ArrayList<VirtualRouter>();
-		vrouter.add(vr);
-		type = 2;
+		for(Layer2Layer e : L2L) {
+			if(e.type==0&&e.vswitch.equals(vs)&&e.vrouter.equals(vr)) {
+				type = -1;//already exist
+				break;
+			}
+		}
+		if(type!=-1) {
+			vswitch = new ArrayList<VirtualSwitch>();
+			vswitch.add(vs);
+			vrouter = new ArrayList<VirtualRouter>();
+			vrouter.add(vr);
+			type = 2;
 		createBr();
+		}
 	}
 	
 	/**
@@ -106,6 +146,20 @@ public class Layer2Layer {
 		}
 		L2L.add(this);
 		saveData();
+	}
+	
+	/**
+	 * 查特定設備的br
+	 * @param name
+	 * @return
+	 */
+	public static ArrayList<Layer2Layer> getBrbyName(String name){
+		ArrayList<Layer2Layer> l2lLs = new ArrayList<Layer2Layer>();
+		for(int i=0;i<L2L.size();i++) {
+			if(L2L.get(i).containName(name))
+				l2lLs.add(L2L.get(i));
+		}
+		return l2lLs;
 	}
 	
 	private static void saveData() {

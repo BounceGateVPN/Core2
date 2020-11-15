@@ -32,7 +32,7 @@ public class Main {
 	public static MainWindow mainframe;
 	
 	public static TapDevice td = new TapDevice();
-	public static VirtualSwitch localVS = new LocalhostVirtualSwitch();
+	public static VirtualSwitch localVS = new LocalhostVirtualSwitch();//LOCAL_SWITCH
 	public static VirtualRouter router;
 	private static Bridge bridge, routerBridge;
 	
@@ -114,6 +114,9 @@ public class Main {
 		 * Start local vSwitch
 		 */
 		Main.localVS.start();
+		Pair<Config,VirtualSwitch> p = new Pair<Config,VirtualSwitch>();
+		p.makePair(null, localVS);//將LOCAL_SWITCH也加到列表中
+		WS_Server.switchLs.put("LOCAL_SWITCH", p);
 		EventSender.sendLog("Starting local switch.");
 		/**
 		 * Start Tap device

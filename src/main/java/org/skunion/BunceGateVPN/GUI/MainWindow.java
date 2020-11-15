@@ -162,6 +162,21 @@ public class MainWindow extends JFrame {
 		
 		JMenuItem setting_Router = new JMenuItem("Router");
 		mnNewMenu_2.add(setting_Router);
+		
+		JMenuItem mntmNewMenuItem_4 = new JMenuItem("Create Bridge");
+		mntmNewMenuItem_4.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				try {
+					CreateBr dialog = new CreateBr();
+					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					dialog.setVisible(true);
+				} catch (Exception ee) {
+					ee.printStackTrace();
+				}
+			}
+		});
+		mnNewMenu_2.add(mntmNewMenuItem_4);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);

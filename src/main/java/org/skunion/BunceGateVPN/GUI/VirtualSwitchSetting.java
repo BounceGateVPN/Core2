@@ -1,6 +1,5 @@
 package org.skunion.BunceGateVPN.GUI;
 
-import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -8,10 +7,8 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
-import org.skunion.BunceGateVPN.core2.BGVConfig;
 import org.skunion.BunceGateVPN.core2.Main;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Client;
-import org.skunion.BunceGateVPN.core2.websocket.WS_Package;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Server;
 
 import com.github.smallru8.BounceGateVPN.Switch.SwitchPort;
@@ -32,11 +29,15 @@ import java.util.Map;
 
 public class VirtualSwitchSetting extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1123647525331481597L;
 	private JPanel contentPane;
 	private DefaultListModel<String> model = new DefaultListModel<String>();
 	private Config cfg;
 	
-	public JList list;//L2Linker list
+	public JList<String> list;//L2Linker list
 	
 	/*
 	public static void main(String[] args) {
@@ -82,7 +83,7 @@ public class VirtualSwitchSetting extends JFrame {
 			cfg.saveConf();
 		}
 		
-		list = new JList(model);
+		list = new JList<String>(model);
 		list.addMouseListener(new MouseAdapter() {//右鍵
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -95,7 +96,7 @@ public class VirtualSwitchSetting extends JFrame {
 	                JCheckBoxMenuItem chckbxmntmNewCheckItem;//autoConn
 	                
 	                //看WS_Client是否已存在在vSwitch(已連線)
-	                Iterator iterator = WS_Server.switchLs.get(cfg.pro.getProperty("switch")).second.port.entrySet().iterator();
+	                Iterator<?> iterator = WS_Server.switchLs.get(cfg.pro.getProperty("switch")).second.port.entrySet().iterator();
 	                boolean connectionStart = false;
 	                while (iterator.hasNext()) {
 	                	Map.Entry mapEntry = (Map.Entry) iterator.next();
