@@ -14,8 +14,11 @@ import com.github.smallru8.util.Pair;
 import javax.swing.border.EtchedBorder;
 import javax.swing.JLabel;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class VSwitchSetting extends JFrame {
 
@@ -70,8 +73,30 @@ public class VSwitchSetting extends JFrame {
 		panel.add(lblNewLabel_1);
 		
 		JButton btnNewButton = new JButton("管理Bridge");
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {//Br管理/刪除
+				DeleteBr dialog = new DeleteBr(swPair.first.switchName);
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+			}
+		});
 		btnNewButton.setBounds(108, 6, 113, 23);
 		panel.add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("用戶管理");
+		btnNewButton_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {//用戶管理
+				
+			}
+		});
+		btnNewButton_1.setBounds(108, 35, 113, 23);
+		panel.add(btnNewButton_1);
+		
+		JLabel lblNewLabel_1_1 = new JLabel("UserManager");
+		lblNewLabel_1_1.setBounds(10, 39, 113, 15);
+		panel.add(lblNewLabel_1_1);
 		
 		JLabel lblNewLabel = new JLabel("基本設定");
 		lblNewLabel.setBounds(10, 10, 97, 15);
