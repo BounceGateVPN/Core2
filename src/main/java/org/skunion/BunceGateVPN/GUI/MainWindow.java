@@ -8,6 +8,7 @@ import javax.swing.border.EmptyBorder;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.skunion.BunceGateVPN.GUI.vswitch.VSwitchSetting;
 import org.skunion.BunceGateVPN.core2.BGVConfig;
 import org.skunion.BunceGateVPN.core2.Main;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Client;
@@ -177,6 +178,9 @@ public class MainWindow extends JFrame {
 			}
 		});
 		mnNewMenu_2.add(mntmNewMenuItem_4);
+		
+		JMenuItem mntmNewMenuItem_5 = new JMenuItem("Delete Bridge");
+		mnNewMenu_2.add(mntmNewMenuItem_5);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -341,7 +345,8 @@ public class MainWindow extends JFrame {
                 	item3.addMouseListener(new MouseAdapter() {
                 		@Override
             			public void mousePressed(MouseEvent e) {
-                			
+                			VSwitchSetting frame = new VSwitchSetting(WS_Server.switchLs.get(((String) list_1.getSelectedValue()).split("\\.")[0]));
+        					frame.setVisible(true);
                 		}
                 	});
                 	
