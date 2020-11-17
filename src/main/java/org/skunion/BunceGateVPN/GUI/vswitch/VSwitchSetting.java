@@ -88,7 +88,9 @@ public class VSwitchSetting extends JFrame {
 		btnNewButton_1.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {//用戶管理
-				
+				UserManager dialog = new UserManager(swPair.first.switchName);
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
 			}
 		});
 		btnNewButton_1.setBounds(108, 35, 113, 23);
@@ -110,11 +112,7 @@ public class VSwitchSetting extends JFrame {
 		JLabel lblNewLabel_2 = new JLabel("Switch狀態");
 		lblNewLabel_2.setBounds(251, 10, 106, 15);
 		contentPane.add(lblNewLabel_2);
-		
-		
-		
-		
-		
+
 		loadSwitchData();
 	}
 	
