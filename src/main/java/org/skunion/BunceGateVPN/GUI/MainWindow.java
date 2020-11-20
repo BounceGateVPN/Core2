@@ -20,7 +20,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -34,10 +33,14 @@ import javax.swing.JScrollPane;
 
 public class MainWindow extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5417385560078047478L;
 	private JPanel contentPane;
-	private JTextField textField;
 	private JList<String> list;//client
 	private JList<String> list_1;//server
+	private JList<String> list_router;//router
 	private JCheckBoxMenuItem chckbxmntmNewCheckItem;
 	private JTextArea textArea;
 	private String path0 = "config/client/";
@@ -69,7 +72,7 @@ public class MainWindow extends JFrame {
 		setResizable(false);
 		EventBus.getDefault().register(this);
 		setTitle("BunceGateVPN");
-		setBounds(100, 100, 651, 416);
+		setBounds(100, 100, 651, 545);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -120,6 +123,18 @@ public class MainWindow extends JFrame {
 			}
 		});
 		mnNewMenu.add(mntmNewMenuItem_1);
+		
+		JMenuItem mntmNewMenuItem_6 = new JMenuItem("Add vRouter config");
+		mntmNewMenuItem_6.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				EventSender.sendLog("Add vRouter config");
+				AddConfig dialog = new AddConfig(Config.ConfType.ROUTER);
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+			}
+		});
+		mnNewMenu.add(mntmNewMenuItem_6);
 		
 		JMenu mnNewMenu_1 = new JMenu("TunTap");
 		menuBar.add(mnNewMenu_1);
@@ -363,15 +378,6 @@ public class MainWindow extends JFrame {
 		scrollPane_ser.setBounds(318, 188, 307, 128);
 		contentPane.add(scrollPane_ser);
 		
-		textField = new JTextField();
-		textField.setBounds(363, 329, 251, 21);
-		contentPane.add(textField);
-		textField.setColumns(10);
-		
-		JLabel lblNewLabel = new JLabel("CMD");
-		lblNewLabel.setBounds(328, 329, 36, 21);
-		contentPane.add(lblNewLabel);
-		
 		JLabel lblClient = new JLabel("Client");
 		lblClient.setBounds(318, 10, 46, 21);
 		contentPane.add(lblClient);
@@ -386,8 +392,22 @@ public class MainWindow extends JFrame {
 		textArea.setEditable(false);
 		
 		JScrollPane scrollPane = new JScrollPane(textArea);
-		scrollPane.setBounds(10, 10, 298, 340);
+		scrollPane.setBounds(10, 10, 298, 474);
 		contentPane.add(scrollPane);
+		
+		JLabel lblNewLabel = new JLabel("VirtualRouter");
+		lblNewLabel.setBounds(318, 326, 147, 15);
+		contentPane.add(lblNewLabel);
+		
+		list_router = new JList<String>();
+		list_router.addMouseListener(new MouseAdapter() {
+			
+		});
+		
+		
+		JScrollPane scrollPane_router = new JScrollPane(list_router);
+		scrollPane_router.setBounds(318, 351, 307, 133);
+		contentPane.add(scrollPane_router);
 		
 		if(BGVConfig.bgvConf.getConf("Tap")!=null&&BGVConfig.bgvConf.getConf("Tap").equalsIgnoreCase("true"))
 			chckbxmntmNewCheckItem.setSelected(true);

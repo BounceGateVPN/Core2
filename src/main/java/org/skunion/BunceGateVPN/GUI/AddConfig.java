@@ -8,7 +8,6 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import org.skunion.BunceGateVPN.core2.Main;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Server;
 
 import com.github.smallru8.BounceGateVPN.Switch.VirtualSwitch;
@@ -24,6 +23,10 @@ import java.awt.event.MouseEvent;
 
 public class AddConfig extends JDialog {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3085639730282661284L;
 	private final JPanel contentPanel = new JPanel();
 	private JDialog jd = this;
 	private JTextField switchName;//若為Server, switchName = cfgName
@@ -36,6 +39,8 @@ public class AddConfig extends JDialog {
 	private JCheckBox sqlCheck;
 	private JPanel panel;
 	private Config cfg;
+	
+	private JLabel lblNewLabel_1;
 	
 	private Config.ConfType t;
 	public JTextField cfgName;
@@ -96,13 +101,20 @@ public class AddConfig extends JDialog {
 		if(t.equals(Config.ConfType.CLIENT)) {//Client config
 			this.setTitle("Add a new client config");
 			sqlCheck.setEnabled(false);
-		}else {//Server config
+		}else if(t.equals(Config.ConfType.SERVER)){//Server config
 			this.setTitle("Add a new virtual switch config");
 			hostname.setEditable(false);
 			portNum.setEditable(false);
 			userName.setEditable(false);
 			passwd.setEditable(false);
 			switchName.setEditable(false);
+		}else if(t.equals(Config.ConfType.ROUTER)) {//router
+			this.setTitle("Add a new virtual router config");
+			lblNewLabel_1.setText("Router IP");
+			portNum.setVisible(false);
+			userName.setVisible(false);
+			passwd.setVisible(false);
+			switchName.setVisible(false);
 		}
 	}
 	
@@ -126,7 +138,7 @@ public class AddConfig extends JDialog {
 			switchName.setColumns(10);
 		}
 		{
-			JLabel lblNewLabel_1 = new JLabel("Hostname");
+			lblNewLabel_1 = new JLabel("Hostname");
 			lblNewLabel_1.setBounds(10, 35, 71, 15);
 			contentPanel.add(lblNewLabel_1);
 		}
@@ -237,50 +249,57 @@ public class AddConfig extends JDialog {
 			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
-				JButton okButton = new JButton("OK");
+				JButton okButton = new JButton("OK");//save
 				okButton.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent e) {
-						cfg = new Config();
-						cfg.setConf(cfgName.getText(), t);
-						if(t.equals(Config.ConfType.CLIENT)) {//client
-							cfg.pro.setProperty("port", portNum.getText());
-							cfg.pro.setProperty("passwd",String.valueOf(passwd.getPassword()));
-							String host = hostname.getText();
-							if(!(host.startsWith("ws://")||host.startsWith("WS://")))
-								host = "ws://" + host;
-							cfg.pro.setProperty("ip", host);
-							cfg.pro.setProperty("user", userName.getText());
-							cfg.pro.setProperty("switch", switchName.getText());
-							cfg.saveConf();
-						}else {//server
-							if(sqlCheck.isSelected())
-								cfg.pro.setProperty("SQL","true");
-							else
-								cfg.pro.setProperty("SQL","false");
-							
-							cfg.pro.setProperty("host", sqlURL.getText());
-							cfg.pro.setProperty("user", sqlUser.getText());
-							cfg.pro.setProperty("passwd",String.valueOf(sqlPasswd.getPassword()));
-							cfg.pro.setProperty("switch", cfgName.getText());//SwitchName = NameConf
-							cfg.saveConf();
-							
-							if(WS_Server.switchLs.containsKey(cfgName.getText())) {
-								Pair<Config,VirtualSwitch> cfgVs = WS_Server.switchLs.get(cfgName.getText());
-								cfg.setConf(cfgName.getText(), t);
-								cfgVs.first = cfg;
-								WS_Server.switchLs.remove(cfgName.getText());
-								WS_Server.switchLs.put(cfg.switchName, cfgVs);
-							}else {
-								Pair<Config,VirtualSwitch> cfgVs = new Pair<Config,VirtualSwitch>();
-								cfg.setConf(cfgName.getText(), t);
-								cfgVs.makePair(cfg, new VirtualSwitch());
-								cfgVs.second.start();
-								WS_Server.switchLs.put(cfg.switchName, cfgVs);
+						if(cfgName.getText() != null) {
+							cfg = new Config();
+							cfg.setConf(cfgName.getText(), t);
+							if(t.equals(Config.ConfType.CLIENT)) {//client
+								cfg.pro.setProperty("port", portNum.getText());
+								cfg.pro.setProperty("passwd",String.valueOf(passwd.getPassword()));
+								String host = hostname.getText();
+								if(!(host.startsWith("ws://")||host.startsWith("WS://")))
+									host = "ws://" + host;
+								cfg.pro.setProperty("ip", host);
+								cfg.pro.setProperty("user", userName.getText());
+								cfg.pro.setProperty("switch", switchName.getText());
+								cfg.saveConf();
+							}else if(t.equals(Config.ConfType.SERVER)){//server
+								if(sqlCheck.isSelected())
+									cfg.pro.setProperty("SQL","true");
+								else
+									cfg.pro.setProperty("SQL","false");
+								
+								cfg.pro.setProperty("host", sqlURL.getText());
+								cfg.pro.setProperty("user", sqlUser.getText());
+								cfg.pro.setProperty("passwd",String.valueOf(sqlPasswd.getPassword()));
+								cfg.pro.setProperty("switch", cfgName.getText());//SwitchName = NameConf
+								cfg.saveConf();
+								
+								if(WS_Server.switchLs.containsKey(cfgName.getText())) {
+									Pair<Config,VirtualSwitch> cfgVs = WS_Server.switchLs.get(cfgName.getText());
+									cfg.setConf(cfgName.getText(), t);
+									cfgVs.first = cfg;
+									WS_Server.switchLs.remove(cfgName.getText());
+									WS_Server.switchLs.put(cfg.switchName, cfgVs);
+								}else {
+									Pair<Config,VirtualSwitch> cfgVs = new Pair<Config,VirtualSwitch>();
+									cfg.setConf(cfgName.getText(), t);
+									cfgVs.makePair(cfg, new VirtualSwitch());
+									cfgVs.second.start();
+									WS_Server.switchLs.put(cfg.switchName, cfgVs);
+								}
+								
+							}else if(t.equals(Config.ConfType.ROUTER)) {//router
+								cfg.pro.setProperty("routerName",cfgName.getText());
+								if(hostname.getText()!=null) 
+									cfg.pro.setProperty("ip", hostname.getText());
+								cfg.saveConf();
 							}
-							
+							jd.dispose();
 						}
-						jd.dispose();
 					}
 				});
 				okButton.setActionCommand("OK");
