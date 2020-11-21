@@ -418,6 +418,7 @@ public class MainWindow extends JFrame {
             			public void mousePressed(MouseEvent e) {//Setting, 開啟vrouter設定視窗
                 			String str = ((String) list_router.getSelectedValue()).split("\\.")[0];
             				//TODO
+                			
                 		}
                 	});
                 	item2 = new JMenuItem("Delete");
