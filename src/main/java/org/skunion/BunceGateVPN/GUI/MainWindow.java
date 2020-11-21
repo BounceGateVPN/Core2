@@ -45,6 +45,7 @@ public class MainWindow extends JFrame {
 	private JTextArea textArea;
 	private String path0 = "config/client/";
 	private String path1 = "config/server/";
+	private String path2 = "config/router/";
 	
 	/**
 	 * Launch the application.
@@ -401,7 +402,44 @@ public class MainWindow extends JFrame {
 		
 		list_router = new JList<String>();
 		list_router.addMouseListener(new MouseAdapter() {
-			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				int index = list_router.locationToIndex(e.getPoint());
+				if (SwingUtilities.isRightMouseButton(e)&&index!=-1) {//vRouter右鍵選單
+					list_router.setSelectedIndex(index);
+	                JPopupMenu menu = new JPopupMenu();
+	                JMenuItem item;//setting
+	                JMenuItem item2;//Delete
+	                String nameConf = (String) list_router.getSelectedValue();
+					
+	                item = new JMenuItem("Setting");
+                	item.addMouseListener(new MouseAdapter() {
+                		@Override
+            			public void mousePressed(MouseEvent e) {//Setting, 開啟vrouter設定視窗
+                			String str = ((String) list_router.getSelectedValue()).split("\\.")[0];
+            				//TODO
+                		}
+                	});
+                	item2 = new JMenuItem("Delete");
+                	item2.addMouseListener(new MouseAdapter() {
+                		@Override
+            			public void mousePressed(MouseEvent e) {//Delete
+                			String str = ((String) list_1.getSelectedValue()).split("\\.")[0];
+            				Config cfgTmp = new Config();
+            				cfgTmp.setConf(str, Config.ConfType.ROUTER);
+            				
+            				WS_Server.routerLs.get(cfgTmp.switchName).second.stop();
+            				WS_Server.routerLs.remove(cfgTmp.switchName);
+            				
+            				new File(path2 + (String) list_router.getSelectedValue()).delete();
+                			list_router.remove(list_router.getSelectedIndex());
+                		}
+                	});
+                	menu.add(item);
+                	menu.add(item2);
+                	menu.show(list_router, e.getPoint().x, e.getPoint().y);
+				}
+			}
 		});
 		
 		
@@ -434,8 +472,11 @@ public class MainWindow extends JFrame {
 		String[] clientCfgLs = f.list();
 		f = new File(path1);
 		String[] serverCfgLs = f.list();
+		f = new File(path2);
+		String[] routerCfgLs = f.list();
 		list.setListData(clientCfgLs);
 		list_1.setListData(serverCfgLs);
+		list_router.setListData(routerCfgLs);
 	}
 	
 	/**
