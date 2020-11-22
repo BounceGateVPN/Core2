@@ -129,6 +129,9 @@ public class VSwitchSetting extends JFrame {
 			Vector<String> links = new Vector<String>();
 			links.addElement("Connections");
 			links.addElement(""+swPair.second.port.size());
+			
+			rowData.addElement(switchName);
+			rowData.addElement(links);
 		}
 		swStat.repaint();
 	}
