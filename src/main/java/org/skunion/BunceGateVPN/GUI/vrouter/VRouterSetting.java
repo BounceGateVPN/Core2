@@ -25,7 +25,7 @@ public class VRouterSetting extends JFrame {
 
 	private JPanel contentPane;
 
-	private Pair<Config,VirtualRouter> roPair;
+	private Pair<Config,VirtualRouter> roPair = null;
 	
 	/**
 	 * Launch the application.
@@ -88,6 +88,13 @@ public class VRouterSetting extends JFrame {
 		panel.add(lblNewLabel_1_1);
 		
 		JButton btnNewButton_1 = new JButton("設定");
+		btnNewButton_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {//開啟routing table設定頁面
+				RoutingTableSetting frame = new RoutingTableSetting(roPair);
+				frame.setVisible(true);
+			}
+		});
 		btnNewButton_1.setBounds(95, 35, 126, 23);
 		panel.add(btnNewButton_1);
 		

@@ -15,8 +15,11 @@ import com.github.smallru8.util.Pair;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JButton;
+import javax.swing.JDialog;
+
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Vector;
 
@@ -33,6 +36,7 @@ public class RoutingTableSetting extends JFrame {
 	/**
 	 * Launch the application.
 	 */
+	/*
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -45,6 +49,7 @@ public class RoutingTableSetting extends JFrame {
 			}
 		});
 	}
+	*/
 
 	/**
 	 * Create the frame.
@@ -59,6 +64,7 @@ public class RoutingTableSetting extends JFrame {
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 534, 395);
+		setTitle("Routing table");
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -87,21 +93,28 @@ public class RoutingTableSetting extends JFrame {
 		closeButton.setBounds(421, 317, 87, 23);
 		contentPane.add(closeButton);
 		
-		JButton saveButton = new JButton("Save");
-		saveButton.setBounds(324, 317, 87, 23);
-		contentPane.add(saveButton);
+		JButton editButton = new JButton("Edit");
+		editButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int row = routingTable.getSelectedRow();
+				if(row!=-1) {
+					RoutingTableDataSetting dialog = new RoutingTableDataSetting(rowData.get(row),roPair);
+					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					dialog.setVisible(true);
+				}
+			}
+		});
+		editButton.setBounds(10, 317, 87, 23);
+		contentPane.add(editButton);
 		
 		JButton addRowButton = new JButton("Add");
 		addRowButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {//Add a empty row
-				Vector<String> v_tmp = new Vector<String>();
-				v_tmp.addElement("");
-				v_tmp.addElement("");
-				v_tmp.addElement("");
-				v_tmp.addElement("");
-				rowData.addElement(v_tmp);
-				routingTable.repaint();
+				RoutingTableDataSetting dialog = new RoutingTableDataSetting(null,roPair);
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
 			}
 		});
 		addRowButton.setBounds(107, 317, 87, 23);
@@ -117,14 +130,38 @@ public class RoutingTableSetting extends JFrame {
 					for(int i=0;i<3;i++)
 						routingData[i] = (String)routingTable.getValueAt(row, i);
 					roPair.second.delRoutingTable(routingData[0], routingData[1], routingData[2]);//從router移除
-					rowData.remove(row);//移除Table顯示
-					saveTable();//存檔
+					
+					ArrayList<String> routingTable_raw = new ArrayList<String>();
+					routingTable_raw.addAll(Arrays.asList(roPair.first.routingTable.split(";")));
+					for(int i=0;i<routingTable_raw.size();i++) {//刪cfg data
+						String[] routingDataTmp = routingTable_raw.get(i).split(",");
+						if(routingDataTmp[0].equals(routingData[0])&&routingDataTmp[1].equals(routingData[1])&&routingDataTmp[2].equals(routingData[2])) {
+							routingTable_raw.remove(i);
+						}
+					}
+					String routingTable_str = "";
+					for(int i=0;i<routingTable_raw.size();i++) 
+						routingTable_str+=routingTable_raw.get(i)+";";
+					roPair.first.pro.setProperty("routingTable", routingTable_str);//存回cfg
+					roPair.first.saveConf();
+					
 					routingTable.repaint();
 				}
 			}
 		});
-		delRowButton.setBounds(10, 317, 87, 23);
+		delRowButton.setBounds(204, 317, 87, 23);
 		contentPane.add(delRowButton);
+		
+		JButton btnNewButton = new JButton("Refresh");
+		btnNewButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				rowData.clear();
+				loadData();
+			}
+		});
+		btnNewButton.setBounds(324, 317, 87, 23);
+		contentPane.add(btnNewButton);
 		
 		loadData();
 	}
@@ -146,20 +183,6 @@ public class RoutingTableSetting extends JFrame {
 				routingTable.repaint();
 			}
 		}
-	}
-	
-	private void saveTable() {
-		String routingTable_raw = "";
-		for(Vector<String> v:rowData) {
-			if(v.elementAt(0).length()>0&&v.elementAt(1).length()>0&&v.elementAt(2).length()>0&&v.elementAt(3).length()>0) {
-				routingTable_raw+=v.elementAt(0)+",";
-				routingTable_raw+=v.elementAt(1)+",";
-				routingTable_raw+=v.elementAt(2)+",";
-				routingTable_raw+=v.elementAt(3)+";";
-			}
-		}
-		roPair.first.pro.setProperty("routingTable", routingTable_raw);
-		roPair.first.saveConf();
 	}
 	
 }
