@@ -23,11 +23,13 @@ public class DeleteBr extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JDialog DB = this;
 	private String switchName = null;
+	private String routerName = null;//
 	private JList<String> targetLs;
 	private ArrayList<Layer2Layer> swL2L;
 	/**
 	 * Launch the application.
 	 */
+	/*
 	public static void main(String[] args) {
 		try {
 			DeleteBr dialog = new DeleteBr();
@@ -36,7 +38,7 @@ public class DeleteBr extends JDialog {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
 	/**
 	 * Create the dialog.
