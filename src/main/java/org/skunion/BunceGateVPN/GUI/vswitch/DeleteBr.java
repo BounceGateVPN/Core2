@@ -22,10 +22,10 @@ public class DeleteBr extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JDialog DB = this;
-	private String switchName = null;
-	private String routerName = null;//
+	private String devName = null;
 	private JList<String> targetLs;
 	private ArrayList<Layer2Layer> swL2L;
+	private boolean devType = true;//true=switch, false=router
 	/**
 	 * Launch the application.
 	 */
@@ -44,9 +44,10 @@ public class DeleteBr extends JDialog {
 	 * Create the dialog.
 	 * @param strs switch name
 	 */
-	public DeleteBr(String...strs) {
-		if(strs.length==1)
-			switchName = strs[0];
+	public DeleteBr(boolean flag,String...strs) {
+		if(strs.length==1&&flag)
+			devName = strs[0];
+		devType = flag;
 		
 		setBounds(100, 100, 326, 300);
 		getContentPane().setLayout(new BorderLayout());
@@ -67,7 +68,7 @@ public class DeleteBr extends JDialog {
 				int index = targetLs.getSelectedIndex();
 				if(index!=-1) {
 					swL2L.get(index).deleteBr();
-					loadSwitchData();//refresh
+					loadData();//refresh
 				}
 			}
 		});
@@ -94,12 +95,12 @@ public class DeleteBr extends JDialog {
 			buttonPane.add(cancelButton);
 		}
 		
-		loadSwitchData();
+		loadData();
 	}
 	
-	private void loadSwitchData() {
-		if(switchName!=null) {
-			swL2L = Layer2Layer.getBrbyName(switchName);
+	private void loadData() {
+		if(devName!=null) {//load data
+			swL2L = Layer2Layer.getBrbyName(devName);
 			String[] strLs = new String[swL2L.size()];
 			
 			for(int i=0;i<strLs.length;i++) {
@@ -111,7 +112,7 @@ public class DeleteBr extends JDialog {
 				}
 				if(swL2L.get(i).vrouter!=null) {
 					for(int j=0;j<swL2L.get(i).vrouter.size();j++) {
-						tmp+="s_"+swL2L.get(i).vrouter.get(j).name+",";
+						tmp+="r_"+swL2L.get(i).vrouter.get(j).name+",";
 					}
 				}
 				strLs[i] = tmp;

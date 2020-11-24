@@ -9,6 +9,8 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.border.EtchedBorder;
 
+import org.skunion.BunceGateVPN.GUI.vswitch.DeleteBr;
+
 import com.github.Mealf.BounceGateVPN.Router.VirtualRouter;
 import com.github.smallru8.BounceGateVPN.Switch.VirtualSwitch;
 import com.github.smallru8.Secure2.config.Config;
@@ -103,6 +105,14 @@ public class VRouterSetting extends JFrame {
 		panel.add(lblNewLabel_1_1_1);
 		
 		JButton btnNewButton_2 = new JButton("管理Bridge");
+		btnNewButton_2.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				DeleteBr dialog = new DeleteBr(true,roPair.first.confName);
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+			}
+		});
 		btnNewButton_2.setBounds(95, 65, 126, 23);
 		panel.add(btnNewButton_2);
 	}

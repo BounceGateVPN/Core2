@@ -76,7 +76,7 @@ public class VSwitchSetting extends JFrame {
 		btnNewButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {//Br管理/刪除
-				DeleteBr dialog = new DeleteBr(swPair.first.switchName);
+				DeleteBr dialog = new DeleteBr(true,swPair.first.switchName);
 				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dialog.setVisible(true);
 			}
