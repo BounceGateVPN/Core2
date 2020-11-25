@@ -169,6 +169,34 @@ public class Main {
 			
 			EventSender.sendLog("VirtualSwitch : " + cfg.switchName + " start.");
 		}
+		
+		/**
+		 * 啟動vRouter
+		 */
+		f = new File("config/router/");
+		serverCfgLs = f.list();
+		for(int i=0;i<serverCfgLs.length;i++) {
+			Config cfg = new Config();
+			cfg.passwd = null;//為router時cfg的passwd欄位拿來存routerinterface,為null表示沒有interface
+			cfg.setConf(serverCfgLs[i].split("\\.")[0], Config.ConfType.ROUTER);
+			Pair<Config,VirtualRouter> cfgRo = new Pair<Config,VirtualRouter>();
+			cfgRo.makePair(cfg, new VirtualRouter(cfg));
+			cfgRo.second.name = cfg.confName;
+			
+			if(cfg.passwd!=null) {//加Interface
+				Config routerInterfaceConfig = new Config();
+				routerInterfaceConfig.setConf(cfg.passwd, Config.ConfType.INTERFACE);
+				try {
+					cfgRo.second.addRouterInterface(routerInterfaceConfig);
+				} catch (URISyntaxException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			cfgRo.second.start();
+		}
+		
+		Layer2Layer.loadData();//載入bridge
 	}
 	
 }
