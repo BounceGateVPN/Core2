@@ -33,8 +33,8 @@ public class Main {
 	
 	public static TapDevice td = new TapDevice();
 	public static VirtualSwitch localVS = new LocalhostVirtualSwitch();//LOCAL_SWITCH
-	public static VirtualRouter router;
-	private static Bridge bridge, routerBridge;
+	//public static VirtualRouter router;
+	private static Bridge bridge;
 	
 	/**
 	 * 給vSwitch用
@@ -46,6 +46,7 @@ public class Main {
 	
 	public static void main( String[] args ) throws SQLException, URISyntaxException, IOException
     {
+		/*
 		Config routerConfig = new Config();
 		routerConfig.setConf("router", Config.ConfType.ROUTER);
 		router = new VirtualRouter(routerConfig);
@@ -55,6 +56,7 @@ public class Main {
 		//to 192.168.87.0/24 from Interface
 		//router.addRoutingTable(-1062709504, 24, 0, 1);
 		router.start();
+		*/
 		
 		try {
 		    UIManager.setLookAndFeel(new FlatDarkLaf());
@@ -165,7 +167,7 @@ public class Main {
 			cfgSv.second.start();
 			WS_Server.switchLs.put(cfg.switchName,cfgSv);
 			bridge = new Bridge(cfgSv.second, localVS);
-			routerBridge = new Bridge(cfgSv.second, router);
+			//routerBridge = new Bridge(cfgSv.second, router);
 			
 			EventSender.sendLog("VirtualSwitch : " + cfg.switchName + " start.");
 		}
@@ -189,7 +191,6 @@ public class Main {
 				try {
 					cfgRo.second.addRouterInterface(routerInterfaceConfig);
 				} catch (URISyntaxException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

@@ -74,7 +74,7 @@ public class MainWindow extends JFrame {
 		setResizable(false);
 		EventBus.getDefault().register(this);
 		setTitle("BunceGateVPN");
-		setBounds(100, 100, 651, 545);
+		setBounds(100, 100, 651, 557);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -490,9 +490,12 @@ public class MainWindow extends JFrame {
 		String[] serverCfgLs = f.list();
 		f = new File(path2);
 		String[] routerCfgLs = f.list();
-		list.setListData(clientCfgLs);
-		list_1.setListData(serverCfgLs);
-		list_router.setListData(routerCfgLs);
+		if(clientCfgLs != null)
+			list.setListData(clientCfgLs);
+		if(serverCfgLs != null)
+			list_1.setListData(serverCfgLs);
+		if(routerCfgLs != null)
+			list_router.setListData(routerCfgLs);
 	}
 	
 	/**
