@@ -8,6 +8,7 @@ import javax.swing.border.EmptyBorder;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.skunion.BunceGateVPN.GUI.vrouter.VRouterSetting;
 import org.skunion.BunceGateVPN.GUI.vswitch.VSwitchSetting;
 import org.skunion.BunceGateVPN.core2.BGVConfig;
 import org.skunion.BunceGateVPN.core2.Main;
@@ -137,6 +138,18 @@ public class MainWindow extends JFrame {
 		});
 		mnNewMenu.add(mntmNewMenuItem_6);
 		
+		JMenuItem mntmNewMenuItem_7 = new JMenuItem("Add interface config");
+		mntmNewMenuItem_7.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				EventSender.sendLog("Add RouterInterface config");
+				AddConfig dialog = new AddConfig(Config.ConfType.INTERFACE);
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+			}
+		});
+		mnNewMenu.add(mntmNewMenuItem_7);
+		
 		JMenu mnNewMenu_1 = new JMenu("TunTap");
 		menuBar.add(mnNewMenu_1);
 		
@@ -177,9 +190,6 @@ public class MainWindow extends JFrame {
 		});
 		mnNewMenu_2.add(mntmNewMenuItem_3);
 		
-		JMenuItem setting_Router = new JMenuItem("Router");
-		mnNewMenu_2.add(setting_Router);
-		
 		JMenuItem mntmNewMenuItem_4 = new JMenuItem("Create Bridge");
 		mntmNewMenuItem_4.addMouseListener(new MouseAdapter() {
 			@Override
@@ -195,8 +205,16 @@ public class MainWindow extends JFrame {
 		});
 		mnNewMenu_2.add(mntmNewMenuItem_4);
 		
-		JMenuItem mntmNewMenuItem_5 = new JMenuItem("Delete Bridge");
-		mnNewMenu_2.add(mntmNewMenuItem_5);
+		JMenuItem mntmNewMenuItem_8 = new JMenuItem("Interface list");
+		mntmNewMenuItem_8.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				RouterInterfaceList dialog = new RouterInterfaceList();
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+			}
+		});
+		mnNewMenu_2.add(mntmNewMenuItem_8);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -244,7 +262,6 @@ public class MainWindow extends JFrame {
 									tmpWS.connect();
 									Main.WS_Client_List.put((String) list.getSelectedValue(), tmpWS);
 								} catch (URISyntaxException e1) {
-									// TODO Auto-generated catch block
 									e1.printStackTrace();
 								}
 	                		}
@@ -299,7 +316,6 @@ public class MainWindow extends JFrame {
 							tmpWS.connect();
 							Main.WS_Client_List.put((String) list.getSelectedValue(), tmpWS);
 						} catch (URISyntaxException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 		            }
@@ -417,8 +433,8 @@ public class MainWindow extends JFrame {
                 		@Override
             			public void mousePressed(MouseEvent e) {//Setting, 開啟vrouter設定視窗
                 			String str = ((String) list_router.getSelectedValue()).split("\\.")[0];
-            				//TODO
-                			
+                			VRouterSetting frame = new VRouterSetting(WS_Server.routerLs.get(str));
+        					frame.setVisible(true);
                 		}
                 	});
                 	item2 = new JMenuItem("Delete");
@@ -466,7 +482,6 @@ public class MainWindow extends JFrame {
 			try {
 				new File("config/bgv.conf").createNewFile();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
 		File f = new File(path0);

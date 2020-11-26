@@ -177,7 +177,7 @@ public class Main {
 		serverCfgLs = f.list();
 		for(int i=0;i<serverCfgLs.length;i++) {
 			Config cfg = new Config();
-			cfg.passwd = null;//為router時cfg的passwd欄位拿來存routerinterface,為null表示沒有interface
+			cfg.passwd = null;//為router時cfg的passwd欄位拿來存routerinterface的名稱,為null表示沒有interface
 			cfg.setConf(serverCfgLs[i].split("\\.")[0], Config.ConfType.ROUTER);
 			Pair<Config,VirtualRouter> cfgRo = new Pair<Config,VirtualRouter>();
 			cfgRo.makePair(cfg, new VirtualRouter(cfg));
