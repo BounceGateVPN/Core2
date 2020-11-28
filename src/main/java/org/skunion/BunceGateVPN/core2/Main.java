@@ -34,7 +34,7 @@ public class Main {
 	public static TapDevice td = new TapDevice();
 	public static VirtualSwitch localVS = new LocalhostVirtualSwitch();//LOCAL_SWITCH
 	//public static VirtualRouter router;
-	private static Bridge bridge;
+	//private static Bridge bridge;
 	
 	/**
 	 * 給vSwitch用
@@ -166,8 +166,10 @@ public class Main {
 			cfgSv.makePair(cfg, new VirtualSwitch());
 			cfgSv.second.start();
 			WS_Server.switchLs.put(cfg.switchName,cfgSv);
-			bridge = new Bridge(cfgSv.second, localVS);
+			//bridge = new Bridge(cfgSv.second, localVS);
 			//routerBridge = new Bridge(cfgSv.second, router);
+			
+			new Bridge(cfgSv.second, localVS);//每台對外vSwitch都跟local switch建立連接
 			
 			EventSender.sendLog("VirtualSwitch : " + cfg.switchName + " start.");
 		}
