@@ -8,6 +8,8 @@ import javax.swing.border.EmptyBorder;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.skunion.BunceGateVPN.GUI.vrouter.VRouterSetting;
+import org.skunion.BunceGateVPN.GUI.vswitch.VSwitchSetting;
 import org.skunion.BunceGateVPN.core2.BGVConfig;
 import org.skunion.BunceGateVPN.core2.Main;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Client;
@@ -19,7 +21,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -33,14 +34,19 @@ import javax.swing.JScrollPane;
 
 public class MainWindow extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5417385560078047478L;
 	private JPanel contentPane;
-	private JTextField textField;
 	private JList<String> list;//client
 	private JList<String> list_1;//server
+	private JList<String> list_router;//router
 	private JCheckBoxMenuItem chckbxmntmNewCheckItem;
 	private JTextArea textArea;
 	private String path0 = "config/client/";
 	private String path1 = "config/server/";
+	private String path2 = "config/router/";
 	
 	/**
 	 * Launch the application.
@@ -68,7 +74,7 @@ public class MainWindow extends JFrame {
 		setResizable(false);
 		EventBus.getDefault().register(this);
 		setTitle("BunceGateVPN");
-		setBounds(100, 100, 651, 416);
+		setBounds(100, 100, 651, 557);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -120,6 +126,30 @@ public class MainWindow extends JFrame {
 		});
 		mnNewMenu.add(mntmNewMenuItem_1);
 		
+		JMenuItem mntmNewMenuItem_6 = new JMenuItem("Add vRouter config");
+		mntmNewMenuItem_6.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				EventSender.sendLog("Add vRouter config");
+				AddConfig dialog = new AddConfig(Config.ConfType.ROUTER);
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+			}
+		});
+		mnNewMenu.add(mntmNewMenuItem_6);
+		
+		JMenuItem mntmNewMenuItem_7 = new JMenuItem("Add interface config");
+		mntmNewMenuItem_7.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				EventSender.sendLog("Add RouterInterface config");
+				AddConfig dialog = new AddConfig(Config.ConfType.INTERFACE);
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+			}
+		});
+		mnNewMenu.add(mntmNewMenuItem_7);
+		
 		JMenu mnNewMenu_1 = new JMenu("TunTap");
 		menuBar.add(mnNewMenu_1);
 		
@@ -159,6 +189,32 @@ public class MainWindow extends JFrame {
 			}
 		});
 		mnNewMenu_2.add(mntmNewMenuItem_3);
+		
+		JMenuItem mntmNewMenuItem_4 = new JMenuItem("Create Bridge");
+		mntmNewMenuItem_4.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				try {
+					CreateBr dialog = new CreateBr();
+					dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+					dialog.setVisible(true);
+				} catch (Exception ee) {
+					ee.printStackTrace();
+				}
+			}
+		});
+		mnNewMenu_2.add(mntmNewMenuItem_4);
+		
+		JMenuItem mntmNewMenuItem_8 = new JMenuItem("Interface list");
+		mntmNewMenuItem_8.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				RouterInterfaceList dialog = new RouterInterfaceList();
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);
+			}
+		});
+		mnNewMenu_2.add(mntmNewMenuItem_8);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -206,7 +262,6 @@ public class MainWindow extends JFrame {
 									tmpWS.connect();
 									Main.WS_Client_List.put((String) list.getSelectedValue(), tmpWS);
 								} catch (URISyntaxException e1) {
-									// TODO Auto-generated catch block
 									e1.printStackTrace();
 								}
 	                		}
@@ -261,7 +316,6 @@ public class MainWindow extends JFrame {
 							tmpWS.connect();
 							Main.WS_Client_List.put((String) list.getSelectedValue(), tmpWS);
 						} catch (URISyntaxException e1) {
-							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
 		            }
@@ -323,7 +377,8 @@ public class MainWindow extends JFrame {
                 	item3.addMouseListener(new MouseAdapter() {
                 		@Override
             			public void mousePressed(MouseEvent e) {
-                			
+                			VSwitchSetting frame = new VSwitchSetting(WS_Server.switchLs.get(((String) list_1.getSelectedValue()).split("\\.")[0]));
+        					frame.setVisible(true);
                 		}
                 	});
                 	
@@ -340,15 +395,6 @@ public class MainWindow extends JFrame {
 		scrollPane_ser.setBounds(318, 188, 307, 128);
 		contentPane.add(scrollPane_ser);
 		
-		textField = new JTextField();
-		textField.setBounds(363, 329, 251, 21);
-		contentPane.add(textField);
-		textField.setColumns(10);
-		
-		JLabel lblNewLabel = new JLabel("CMD");
-		lblNewLabel.setBounds(328, 329, 36, 21);
-		contentPane.add(lblNewLabel);
-		
 		JLabel lblClient = new JLabel("Client");
 		lblClient.setBounds(318, 10, 46, 21);
 		contentPane.add(lblClient);
@@ -363,8 +409,60 @@ public class MainWindow extends JFrame {
 		textArea.setEditable(false);
 		
 		JScrollPane scrollPane = new JScrollPane(textArea);
-		scrollPane.setBounds(10, 10, 298, 340);
+		scrollPane.setBounds(10, 10, 298, 474);
 		contentPane.add(scrollPane);
+		
+		JLabel lblNewLabel = new JLabel("VirtualRouter");
+		lblNewLabel.setBounds(318, 326, 147, 15);
+		contentPane.add(lblNewLabel);
+		
+		list_router = new JList<String>();
+		list_router.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				int index = list_router.locationToIndex(e.getPoint());
+				if (SwingUtilities.isRightMouseButton(e)&&index!=-1) {//vRouter右鍵選單
+					list_router.setSelectedIndex(index);
+	                JPopupMenu menu = new JPopupMenu();
+	                JMenuItem item;//setting
+	                JMenuItem item2;//Delete
+	                String nameConf = (String) list_router.getSelectedValue();
+					
+	                item = new JMenuItem("Setting");
+                	item.addMouseListener(new MouseAdapter() {
+                		@Override
+            			public void mousePressed(MouseEvent e) {//Setting, 開啟vrouter設定視窗
+                			String str = ((String) list_router.getSelectedValue()).split("\\.")[0];
+                			VRouterSetting frame = new VRouterSetting(WS_Server.routerLs.get(str));
+        					frame.setVisible(true);
+                		}
+                	});
+                	item2 = new JMenuItem("Delete");
+                	item2.addMouseListener(new MouseAdapter() {
+                		@Override
+            			public void mousePressed(MouseEvent e) {//Delete
+                			String str = ((String) list_1.getSelectedValue()).split("\\.")[0];
+            				Config cfgTmp = new Config();
+            				cfgTmp.setConf(str, Config.ConfType.ROUTER);
+            				
+            				WS_Server.routerLs.get(cfgTmp.switchName).second.stop();
+            				WS_Server.routerLs.remove(cfgTmp.switchName);
+            				
+            				new File(path2 + (String) list_router.getSelectedValue()).delete();
+                			list_router.remove(list_router.getSelectedIndex());
+                		}
+                	});
+                	menu.add(item);
+                	menu.add(item2);
+                	menu.show(list_router, e.getPoint().x, e.getPoint().y);
+				}
+			}
+		});
+		
+		
+		JScrollPane scrollPane_router = new JScrollPane(list_router);
+		scrollPane_router.setBounds(318, 351, 307, 133);
+		contentPane.add(scrollPane_router);
 		
 		if(BGVConfig.bgvConf.getConf("Tap")!=null&&BGVConfig.bgvConf.getConf("Tap").equalsIgnoreCase("true"))
 			chckbxmntmNewCheckItem.setSelected(true);
@@ -384,15 +482,20 @@ public class MainWindow extends JFrame {
 			try {
 				new File("config/bgv.conf").createNewFile();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
 		File f = new File(path0);
 		String[] clientCfgLs = f.list();
 		f = new File(path1);
 		String[] serverCfgLs = f.list();
-		list.setListData(clientCfgLs);
-		list_1.setListData(serverCfgLs);
+		f = new File(path2);
+		String[] routerCfgLs = f.list();
+		if(clientCfgLs != null)
+			list.setListData(clientCfgLs);
+		if(serverCfgLs != null)
+			list_1.setListData(serverCfgLs);
+		if(routerCfgLs != null)
+			list_router.setListData(routerCfgLs);
 	}
 	
 	/**

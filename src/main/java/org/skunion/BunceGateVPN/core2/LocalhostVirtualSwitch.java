@@ -4,6 +4,8 @@ import com.github.smallru8.BounceGateVPN.Switch.SwitchPort;
 import com.github.smallru8.BounceGateVPN.Switch.VirtualSwitch;
 import com.github.smallru8.driver.tuntap.TapDevice;
 import com.github.smallru8.util.abstracts.Port;
+import com.github.smallru8.util.log.Event;
+import com.github.smallru8.util.log.EventSender;
 
 /**
  * 
@@ -21,6 +23,7 @@ public class LocalhostVirtualSwitch extends VirtualSwitch{
 	
 	public LocalhostVirtualSwitch() {
 		super();
+		name = "LOCAL_SWITCH";
 	}
 	
 	@Override
@@ -36,6 +39,7 @@ public class LocalhostVirtualSwitch extends VirtualSwitch{
 	@Override
 	protected void sendDataToDevice(int devHashCode,byte[] data) {//由Switch呼叫，之後要在送出前加密，現在先直接送
 		if(devHashCode == 0) {//廣播
+			EventSender.sendLog("Send Broadcast.");
 			int tmpHashCode = switchTable.searchSrcPortHashCode(data);
 			for(int k : port.keySet()) {
 				if(k!=tmpHashCode) {//不要送給自己
@@ -57,6 +61,7 @@ public class LocalhostVirtualSwitch extends VirtualSwitch{
 					if(switchTable.searchSrcPortHashCode(buffer)==td_Hashcode) {//由本地用戶送出(tap)
 						sendDataToDevice(switchTable.searchDesPortHashCode(buffer),buffer);//往外送(WS)
 					}else{//外部輸入到本地
+						
 						sendDataToDevice(td_Hashcode,buffer);//一律往tap送
 					}
 				}

@@ -17,7 +17,9 @@ import org.skunion.BunceGateVPN.core2.websocket.WS_Client;
 import org.skunion.BunceGateVPN.core2.websocket.WS_Server;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+import com.github.Mealf.BounceGateVPN.Router.VirtualRouter;
 import com.github.smallru8.BounceGateVPN.Switch.VirtualSwitch;
+import com.github.smallru8.BounceGateVPN.bridge.Bridge;
 import com.github.smallru8.Secure2.config.Config;
 import com.github.smallru8.driver.tuntap.TapDevice;
 import com.github.smallru8.util.Pair;
@@ -30,7 +32,9 @@ public class Main {
 	public static MainWindow mainframe;
 	
 	public static TapDevice td = new TapDevice();
-	public static VirtualSwitch localVS = new LocalhostVirtualSwitch();
+	public static VirtualSwitch localVS = new LocalhostVirtualSwitch();//LOCAL_SWITCH
+	//public static VirtualRouter router;
+	private static Bridge bridge;
 	
 	/**
 	 * 給vSwitch用
@@ -42,6 +46,18 @@ public class Main {
 	
 	public static void main( String[] args ) throws SQLException, URISyntaxException, IOException
     {
+		/*
+		Config routerConfig = new Config();
+		routerConfig.setConf("router", Config.ConfType.ROUTER);
+		router = new VirtualRouter(routerConfig);
+		Config routerInterfaceConfig = new Config();
+		routerInterfaceConfig.setConf("routerInterface", Config.ConfType.CLIENT);
+		router.addRouterInterface(routerInterfaceConfig);
+		//to 192.168.87.0/24 from Interface
+		//router.addRoutingTable(-1062709504, 24, 0, 1);
+		router.start();
+		*/
+		
 		try {
 		    UIManager.setLookAndFeel(new FlatDarkLaf());
 		} catch( Exception ex ) {
@@ -100,6 +116,9 @@ public class Main {
 		 * Start local vSwitch
 		 */
 		Main.localVS.start();
+		Pair<Config,VirtualSwitch> p = new Pair<Config,VirtualSwitch>();
+		p.makePair(null, localVS);//將LOCAL_SWITCH也加到列表中
+		WS_Server.switchLs.put("LOCAL_SWITCH", p);
 		EventSender.sendLog("Starting local switch.");
 		/**
 		 * Start Tap device
@@ -139,6 +158,7 @@ public class Main {
 		 */
 		File f = new File("config/server/");
 		String[] serverCfgLs = f.list();
+		
 		for(int i=0;i<serverCfgLs.length;i++) {
 			Config cfg = new Config();
 			cfg.setConf(serverCfgLs[i].split("\\.")[0], Config.ConfType.SERVER);
@@ -146,8 +166,38 @@ public class Main {
 			cfgSv.makePair(cfg, new VirtualSwitch());
 			cfgSv.second.start();
 			WS_Server.switchLs.put(cfg.switchName,cfgSv);
+			bridge = new Bridge(cfgSv.second, localVS);
+			//routerBridge = new Bridge(cfgSv.second, router);
+			
 			EventSender.sendLog("VirtualSwitch : " + cfg.switchName + " start.");
 		}
+		
+		/**
+		 * 啟動vRouter
+		 */
+		f = new File("config/router/");
+		serverCfgLs = f.list();
+		for(int i=0;i<serverCfgLs.length;i++) {
+			Config cfg = new Config();
+			cfg.passwd = null;//為router時cfg的passwd欄位拿來存routerinterface的名稱,為null表示沒有interface
+			cfg.setConf(serverCfgLs[i].split("\\.")[0], Config.ConfType.ROUTER);
+			Pair<Config,VirtualRouter> cfgRo = new Pair<Config,VirtualRouter>();
+			cfgRo.makePair(cfg, new VirtualRouter(cfg));
+			cfgRo.second.name = cfg.confName;
+			
+			if(cfg.passwd!=null) {//加Interface
+				Config routerInterfaceConfig = new Config();
+				routerInterfaceConfig.setConf(cfg.passwd, Config.ConfType.INTERFACE);
+				try {
+					cfgRo.second.addRouterInterface(routerInterfaceConfig);
+				} catch (URISyntaxException e) {
+					e.printStackTrace();
+				}
+			}
+			cfgRo.second.start();
+		}
+		
+		Layer2Layer.loadData();//載入bridge
 	}
 	
 }

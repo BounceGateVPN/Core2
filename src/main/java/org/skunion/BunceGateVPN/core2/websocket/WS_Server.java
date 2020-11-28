@@ -16,6 +16,7 @@ import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 
+import com.github.Mealf.BounceGateVPN.Router.VirtualRouter;
 import com.github.smallru8.BounceGateVPN.Switch.SwitchPort;
 import com.github.smallru8.BounceGateVPN.Switch.VirtualSwitch;
 import com.github.smallru8.Secure2.Secure2;
@@ -33,6 +34,8 @@ public class WS_Server extends WebSocketServer{
 	public final Base64.Encoder encoder = Base64.getEncoder();
 	
 	public static Map<String,Pair<Config,VirtualSwitch>> switchLs = new HashMap<>();//SwitchName,<switch config,switch>
+	public static Map<String,Pair<Config,VirtualRouter>> routerLs = new HashMap<>();//RouterName,<router config,router>
+	
 	public Map<WebSocket,WS_Package> WSRecord = new HashMap<>();//Connection list
 	
 	public WS_Server(InetSocketAddress address) {
