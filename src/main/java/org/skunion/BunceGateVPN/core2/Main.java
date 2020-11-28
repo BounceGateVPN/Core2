@@ -197,6 +197,8 @@ public class Main {
 				}
 			}
 			cfgRo.second.start();
+			
+			WS_Server.routerLs.put(cfg.confName, cfgRo);
 		}
 		
 		Layer2Layer.loadData();//載入bridge
