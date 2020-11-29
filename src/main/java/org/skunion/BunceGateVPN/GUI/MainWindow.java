@@ -378,7 +378,8 @@ public class MainWindow extends JFrame {
                 		@Override
             			public void mousePressed(MouseEvent e) {
                 			VSwitchSetting frame = new VSwitchSetting(WS_Server.switchLs.get(((String) list_1.getSelectedValue()).split("\\.")[0]));
-        					frame.setVisible(true);
+        					frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                		frame.setVisible(true);
                 		}
                 	});
                 	
@@ -433,7 +434,9 @@ public class MainWindow extends JFrame {
                 		@Override
             			public void mousePressed(MouseEvent e) {//Setting, 開啟vrouter設定視窗
                 			String str = ((String) list_router.getSelectedValue()).split("\\.")[0];
+                			//System.out.println("config name = "+str);
                 			VRouterSetting frame = new VRouterSetting(WS_Server.routerLs.get(str));
+                			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         					frame.setVisible(true);
                 		}
                 	});

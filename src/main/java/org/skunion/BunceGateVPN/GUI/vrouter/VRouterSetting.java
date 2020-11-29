@@ -98,6 +98,7 @@ public class VRouterSetting extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {//開啟routing table設定頁面
 				RoutingTableSetting frame = new RoutingTableSetting(roPair);
+				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				frame.setVisible(true);
 			}
 		});
@@ -145,7 +146,7 @@ public class VRouterSetting extends JFrame {
 			for(int i=0;i<fLs.length;i++) {
 				fLs[i] = fLs[i].split("\\.")[0];
 				comboBox.insertItemAt(fLs[i], i);
-				if(fLs[i].equals(roPair.first.passwd))//passwd存的是InterfaceName
+				if(roPair!=null && fLs[i].equals(roPair.first.passwd))//passwd存的是InterfaceName
 					comboBox.setSelectedIndex(i);
 			}
 		}
