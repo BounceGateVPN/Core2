@@ -164,6 +164,7 @@ public class Main {
 			cfg.setConf(serverCfgLs[i].split("\\.")[0], Config.ConfType.SERVER);
 			Pair<Config,VirtualSwitch> cfgSv = new Pair<Config,VirtualSwitch>();
 			cfgSv.makePair(cfg, new VirtualSwitch());
+			cfgSv.second.name = cfg.switchName;
 			cfgSv.second.start();
 			WS_Server.switchLs.put(cfg.switchName,cfgSv);
 			//bridge = new Bridge(cfgSv.second, localVS);
