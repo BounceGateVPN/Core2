@@ -161,7 +161,9 @@ public class UserManager extends JDialog {
 					userNames.add(rs.getString(1));
 				}
 				
-				users.setListData((String[]) userNames.toArray());
+				String[] userList = new String[userNames.size()];
+				userList = userNames.toArray(userList);
+				users.setListData(userList);
 				//TODO
 				
 			} catch (SQLException e) {

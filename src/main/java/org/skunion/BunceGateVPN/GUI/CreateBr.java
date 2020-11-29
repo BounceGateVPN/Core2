@@ -82,10 +82,12 @@ public class CreateBr extends JDialog {
 		ArrayList<String> roNameLs = new ArrayList<String>();
 		for(Entry<String, Pair<Config, VirtualSwitch>> entry : WS_Server.switchLs.entrySet())
 			swNameLs.add(entry.getKey());
-		switchNameLs = (String[]) swNameLs.toArray();
+		switchNameLs = new String[swNameLs.size()];
+		switchNameLs = swNameLs.toArray(switchNameLs);
 		for(Entry<String, Pair<Config, VirtualRouter>> entry : WS_Server.routerLs.entrySet())
 			roNameLs.add(entry.getKey());
-		routerNameLs = (String[]) roNameLs.toArray();
+		routerNameLs = new String[roNameLs.size()];
+		routerNameLs = roNameLs.toArray(routerNameLs);
 		
 		routerBtn_left = new JButton("Router");
 		switchBtn_left = new JButton("Switch");
