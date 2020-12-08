@@ -18,6 +18,7 @@ import javax.swing.JDialog;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.net.URISyntaxException;
 
 import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
@@ -136,6 +137,23 @@ public class VRouterSetting extends JFrame {
 		comboBox.setBounds(95, 94, 126, 23);
 		panel.add(comboBox);
 		
+		JButton btnNewButton_3 = new JButton("Connect");
+		btnNewButton_3.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Config c = new Config();
+				c.setConf((String) comboBox.getSelectedItem(), Config.ConfType.INTERFACE);
+				try {
+					roPair.second.addRouterInterface(c);
+				} catch (URISyntaxException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		btnNewButton_3.setBounds(95, 127, 126, 23);
+		panel.add(btnNewButton_3);
+		
 		loadData();
 	}
 	
@@ -151,5 +169,4 @@ public class VRouterSetting extends JFrame {
 			}
 		}
 	}
-	
 }
